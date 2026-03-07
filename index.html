@@ -100,12 +100,45 @@
             line-height: 1.5;
         }
         /* 图片响应式 - 确保在各种设备上都能正常显示 */
-        .card img {
+        .card img,
+        .rss-image {
             max-width: 100%;
             height: auto;
             border-radius: 8px;
             margin: 10px 0;
             display: block;
+            object-fit: cover;
+        }
+        
+        /* RSS 源图片专用样式 */
+        .article-list img,
+        .abstract img {
+            max-width: 100%;
+            width: auto;
+            max-height: 300px;
+            height: auto;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: block;
+            object-fit: contain;
+        }
+        
+        /* 小屏幕优化 */
+        @media (max-width: 768px) {
+            .article-list img,
+            .abstract img {
+                max-height: 200px;
+                margin: 8px 0;
+            }
+        }
+        
+        /* 超小屏幕优化 */
+        @media (max-width: 480px) {
+            .article-list img,
+            .abstract img {
+                max-height: 150px;
+                border-radius: 6px;
+            }
         }
         blockquote {
             border-left: 4px solid #4a6741;
@@ -136,7 +169,7 @@
         <header>
             <h1>📖 Lichtenberg 世界文学日报</h1>
             <p>美洲 · 欧洲 · 非洲 · 亚洲</p>
-            <div class="update-time">更新时间: 2026年03月07日 22:18</div>
+            <div class="update-time">更新时间: 2026年03月07日 22:24</div>
         </header>
         
         <div class="card">
@@ -151,27 +184,27 @@
 
 <ul class="article-list">
 <li><a href="https://www.nybooks.com/online/2026/03/06/the-lie-of-preventive-war/" class="article-title" target="_blank" rel="noopener noreferrer">The Lie of ‘Preventive’ War</a>
-<p class="abstract">In January, during a lengthy New York Times interview with President Donald Trump, one of the paper’s reporters asked him whether he saw “any checks” to his “power on the world stage.” Yes, he answered: “There is one t...</p></li>
+<p class="abstract"><img src="https://www.nybooks.com/wp-content/uploads/2026/03/Cole202603_2.jpeg" / class="rss-image">In January, during a lengthy New York Times interview with President Donald Trump, one of the paper’s reporters asked him whether he saw “any checks” to his “power on the world stage.” Yes, he answered: “There is one t...</p></li>
 </ul>
 
 <ul class="article-list">
 <li><a href="https://www.nybooks.com/articles/2026/03/26/tick-tick-boom-1929-andrew-ross-sorkin/" class="article-title" target="_blank" rel="noopener noreferrer">Tick, Tick…Boom!</a>
-<p class="abstract">Andrew Ross Sorkin’s history of the 1929 stock market crash reminds us that financial bubbles are inevitable—and that another one may be about to pop....</p></li>
+<p class="abstract"><img src="https://www.nybooks.com/wp-content/uploads/2026/03/sorkin_andrew_ross-032626-900.jpg" / class="rss-image">Andrew Ross Sorkin’s history of the 1929 stock market crash reminds us that financial bubbles are inevitable—and that another one may be about to pop....</p></li>
 </ul>
 
 <ul class="article-list">
 <li><a href="https://www.nybooks.com/articles/2026/03/26/clown-show-the-first-fascist-marquis-de-mores/" class="article-title" target="_blank" rel="noopener noreferrer">Clown Show</a>
-<p class="abstract">In every era a certain kind of unprincipled demagogue driven by an insatiable need for attention and a sense of what will capture the public's imagination rises to the fore. In the early years of France’s Third Re...</p></li>
+<p class="abstract"><img src="https://www.nybooks.com/wp-content/uploads/2026/03/lilla_1-032626-900.jpg" / class="rss-image">In every era a certain kind of unprincipled demagogue driven by an insatiable need for attention and a sense of what will capture the public's imagination rises to the fore. In the early years of France’s Third Re...</p></li>
 </ul>
 
 <ul class="article-list">
 <li><a href="https://www.nybooks.com/articles/2026/03/26/gods-impertinent-prophets-voices-of-thunder-baker/" class="article-title" target="_blank" rel="noopener noreferrer">God’s Impertinent Prophets</a>
-<p class="abstract">A new history brings to light the dissenting women who wrote, preached, and testified during England’s tumultuous seventeenth century, claiming the standing to speak as excluded outsiders who had un unfiltered ...</p></li>
+<p class="abstract"><img src="https://www.nybooks.com/wp-content/uploads/2026/03/maglaque_1-032626-900.jpg" / class="rss-image">A new history brings to light the dissenting women who wrote, preached, and testified during England’s tumultuous seventeenth century, claiming the standing to speak as excluded outsiders who had un unfiltered ...</p></li>
 </ul>
 
 <ul class="article-list">
 <li><a href="https://www.nybooks.com/articles/2026/03/26/chinas-leader-manque-chiang-kai-shek/" class="article-title" target="_blank" rel="noopener noreferrer">China’s Leader Manqué</a>
-<p class="abstract">Chiang Kai-shek had enormous flaws as a leader, but something was nonetheless lost to China when he and his Republican government were forced into exile on Taiwan....</p></li>
+<p class="abstract"><img src="https://www.nybooks.com/wp-content/uploads/2026/03/schell_1-032626-900.jpg" / class="rss-image">Chiang Kai-shek had enormous flaws as a leader, but something was nonetheless lost to China when he and his Republican government were forced into exile on Taiwan....</p></li>
 </ul>
 
 
@@ -569,27 +602,27 @@
 
 <ul class="article-list">
 <li><a href="https://arablit.org/2026/03/06/online-summer-arabic-translation-workshop-open-for-applications/" class="article-title" target="_blank" rel="noopener noreferrer">Online Summer Arabic Translation Workshop Open for Applications</a>
-<p class="abstract"><p></p>The British Centre for Literary Translation (BCLT) Arabic Summer Workshop i...</p></li>
+<p class="abstract"><p><img alt="" class="attachment-full size-full wp-post-image" height="720" src="https://i0.wp.com/arablit.org/wp-content/uploads/2026/02/Untitled-design-2026-02-26T143833.613.jpg?fit=1280%2C720&amp;ssl=1" width="1280" / class="rss-image"></p>The British Centre for Literary Translation (BCLT) Arabic Summer Workshop i...</p></li>
 </ul>
 
 <ul class="article-list">
 <li><a href="https://arablit.org/2026/03/05/bassma-sheikhos-scream/" class="article-title" target="_blank" rel="noopener noreferrer">Bassma Sheikho’s ‘Scream’</a>
-<p class="abstract"><p></p>"No electricity tonight. / Boredom is about to kill me."...</p></li>
+<p class="abstract"><p><img alt="" class="attachment-full size-full wp-post-image" height="720" src="https://i0.wp.com/arablit.org/wp-content/uploads/2026/03/Untitled-design-2026-03-05T085437.810.png?fit=1280%2C720&amp;ssl=1" width="1280" / class="rss-image"></p>"No electricity tonight. / Boredom is about to kill me."...</p></li>
 </ul>
 
 <ul class="article-list">
 <li><a href="https://arablit.org/2026/03/04/translating-noir-on-the-end-of-sahara/" class="article-title" target="_blank" rel="noopener noreferrer">Translating Noir: On ‘The End of Sahara’</a>
-<p class="abstract"><p></p>In this conversation with ArabLit’s Tugrul ...</p></li>
+<p class="abstract"><p><img alt="" class="attachment-full size-full wp-post-image" height="720" src="https://i0.wp.com/arablit.org/wp-content/uploads/2026/03/Translating-Noir-Alexander-Elinson-on-Said-Khatibis-The-End-of-Sahara.jpg?fit=1280%2C720&amp;ssl=1" width="1280" / class="rss-image"></p>In this conversation with ArabLit’s Tugrul ...</p></li>
 </ul>
 
 <ul class="article-list">
 <li><a href="https://arablit.org/2026/03/03/samar-yazbeks-the-silent-night-dwellers-of-damascus/" class="article-title" target="_blank" rel="noopener noreferrer">Samar Yazbek’s ‘The Silent Night-Dwellers of Damascus’</a>
-<p class="abstract"><p></p>This essay, by the extraordinary Syrian writer Samar Yazbek, appears in our...</p></li>
+<p class="abstract"><p><img alt="" class="attachment-full size-full wp-post-image" height="720" src="https://i0.wp.com/arablit.org/wp-content/uploads/2026/03/Untitled-design-2026-03-02T140107.742.png?fit=1280%2C720&amp;ssl=1" width="1280" / class="rss-image"></p>This essay, by the extraordinary Syrian writer Samar Yazbek, appears in our...</p></li>
 </ul>
 
 <ul class="article-list">
 <li><a href="https://arablit.org/2026/03/02/part-five-emile-habibys-the-six-day-sextet/" class="article-title" target="_blank" rel="noopener noreferrer">Part Five, Emile Habiby’s ‘The Six-Day Sextet’</a>
-<p class="abstract"><p></li>
+<p class="abstract"><p><img alt="" class="attachment-full size-full wp-post-image" height="720" src="https://i0.wp.com/arablit.org/wp-content/uploads/2026/02/%D8%B3%D9%88%D8%AF%D8%A7%D8%B3%D9%8A%D8%A9-%D8%A7%D9%84%D8%A3%D9%8A%D8%A7%D9%85-%D8%A7%D9%84%D8%B3%D8%AA%D8%A9-%D8%A5%D9%85%D9%8A%D9%84-%D8%AD%D8%A8%D9%8A%D8%A8%D...</p class="rss-image"></li>
 </ul>
 
 
@@ -600,7 +633,7 @@
 
 <hr>
 
-<em>报告生成时间: 2026-03-07 22:18</em>  
+<em>报告生成时间: 2026-03-07 22:24</em>  
 <em>共收录 42 个 RSS 源</em>  
 <em>Lichtenberg - 世界文学情报追踪</em>
 
