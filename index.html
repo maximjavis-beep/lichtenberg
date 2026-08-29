@@ -1,1091 +1,121 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer">
-    <title>📖 Lichtenberg 世界文学日报 - 2026年04月26日</title>
-
-    <!-- Open Graph -->
-    <meta property="og:title" content="📖 Lichtenberg 世界文学日报">
-    <meta property="og:description" content="每日自动抓取美洲、欧洲、非洲、亚洲四大洲文学期刊与评论，生成世界文学综合报告">
-    <meta property="og:type" content="article">
-    <meta property="og:image" content="https://lichtenberg.vercel.app/cover.jpg">
-    
-    <!-- 微信专用 -->
-    <meta name="description" content="每日自动抓取美洲、欧洲、非洲、亚洲四大洲文学期刊与评论，生成世界文学综合报告">
-    <meta itemprop="name" content="📖 Lichtenberg 世界文学日报">
-    <meta itemprop="description" content="每日自动抓取美洲、欧洲、非洲、亚洲四大洲文学期刊与评论，生成世界文学综合报告">
-    <meta itemprop="image" content="https://lichtenberg.vercel.app/cover.jpg">
-    
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="📖 Lichtenberg 世界文学日报">
-    <meta name="twitter:description" content="每日自动抓取美洲、欧洲、非洲、亚洲四大洲文学期刊与评论，生成世界文学综合报告">
-    <meta name="twitter:image" content="https://lichtenberg.vercel.app/cover.jpg">
-    
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Serif SC', serif;
-            background: linear-gradient(135deg, #2c3e50 0%, #4a6741 100%);
-            min-height: 100vh;
-            padding: 20px;
-            line-height: 1.6;
-        }
-        .container { max-width: 1200px; margin: 0 auto; }
-        header {
-            text-align: center;
-            padding: 40px 20px;
-            color: white;
-        }
-        header h1 { font-size: 2.5em; margin-bottom: 5px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
-        header h2.title-sub { font-size: 1.8em; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); font-weight: 600; color: white; }
-        header p { font-size: 1.1em; opacity: 0.9; }
-        .update-time {
-            background: rgba(255,255,255,0.2);
-            display: inline-block;
-            padding: 8px 20px;
-            border-radius: 20px;
-            margin-top: 15px;
-            font-size: 0.9em;
-        }
-        .card {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
-        .card h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #4a6741;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.5em;
-        }
-        .card h3 {
-            color: #555;
-            margin: 25px 0 15px 0;
-            padding-left: 10px;
-            border-left: 3px solid #2c3e50;
-            font-size: 1.2em;
-        }
-        .article-list { list-style: none; }
-        .article-list li {
-            padding: 15px 20px;
-            margin-bottom: 12px;
-            background: #f8f9fa;
-            border-radius: 12px;
-            border-left: 4px solid #4a6741;
-            transition: all 0.3s ease;
-        }
-        .article-list li:hover {
-            background: #e9ecef;
-            transform: translateX(5px);
-        }
-        .article-title {
-            font-weight: 600;
-            color: #2c3e50;
-            text-decoration: none;
-            font-size: 1em;
-            display: block;
-            margin-bottom: 6px;
-        }
-        .article-title:hover { color: #4a6741; }
-        .abstract {
-            color: #666;
-            font-size: 0.9em;
-            line-height: 1.5;
-        }
-        /* ===== 图片容器和自适应样式 ===== */
-        .img-container {
-            position: relative;
-            width: 100%;
-            max-width: 100%;
-            margin: 12px 0;
-            border-radius: 12px;
-            overflow: hidden;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
-            min-height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .img-container.img-loaded {
-            background: transparent;
-            min-height: auto;
-        }
-        
-        .img-container.img-error {
-            background: #f0f0f0;
-            min-height: 80px;
-        }
-        
-        .content-img {
-            width: 100%;
-            max-width: 100%;
-            height: auto;
-            max-height: 400px;
-            object-fit: cover;
-            object-position: center;
-            border-radius: 12px;
-            display: block;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .img-container.img-loaded .content-img {
-            opacity: 1;
-        }
-        
-        .img-container.img-error .content-img {
-            display: none;
-        }
-        
-        .img-placeholder {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2em;
-            opacity: 0.5;
-            transition: opacity 0.3s ease;
-        }
-        
-        .img-container.img-loaded .img-placeholder {
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        .img-container.img-error .img-placeholder {
-            opacity: 0.3;
-            font-size: 1.5em;
-        }
-        
-        /* 摘要中的图片容器 */
-        .abstract .img-container {
-            margin: 8px 0;
-            border-radius: 8px;
-            min-height: 80px;
-        }
-        
-        .abstract .content-img {
-            max-height: 300px;
-            border-radius: 8px;
-        }
-        
-        /* ===== 响应式设计 ===== */
-        @media (max-width: 768px) {
-            body { padding: 10px; }
-            header h1 { font-size: 1.8em; }
-            header { padding: 30px 15px; }
-            .card { padding: 20px; border-radius: 12px; }
-            .card h2 { font-size: 1.3em; }
-            .card h3 { font-size: 1.1em; }
-            .article-list li { padding: 12px 15px; }
-            .content-img { max-height: 300px; }
-            .img-container { min-height: 100px; border-radius: 8px; }
-            .abstract .content-img { max-height: 200px; }
-        }
-        
-        @media (max-width: 480px) {
-            header h1 { font-size: 1.5em; }
-            .card { padding: 15px; }
-            .content-img { max-height: 250px; }
-            .img-container { min-height: 80px; }
-            .abstract { font-size: 0.85em; }
-        }
-        
-        @media (min-width: 1400px) {
-            .container { max-width: 1400px; }
-            .content-img { max-height: 500px; }
-        }
-        blockquote {
-            border-left: 4px solid #4a6741;
-            padding-left: 20px;
-            margin: 15px 0;
-            color: #555;
-            font-style: italic;
-        }
-        hr {
-            border: none;
-            border-top: 2px solid #e0e0e0;
-            margin: 30px 0;
-        }
-        footer {
-            text-align: center;
-            padding: 30px;
-            color: rgba(255,255,255,0.8);
-            font-size: 0.9em;
-        }
-        @media (max-width: 768px) {
-            header h1 { font-size: 1.8em; }
-            .card { padding: 20px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<title>📖 Lichtenberg 世界文学日报 - 2026年08月29日</title>
+<meta name="description" content="每日资讯聚合">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Noto Serif SC',serif; background:linear-gradient(135deg,#2c3e50, #4a6572); min-height:100vh; padding:24px; line-height:1.6; }
+.container { max-width:1100px; margin:0 auto; }
+header { text-align:center; padding:36px 20px; color:#fff; }
+header h1 { font-size:2.2em; text-shadow:2px 2px 4px rgba(0,0,0,.3); }
+header .time { display:inline-block; background:rgba(255,255,255,.18); padding:6px 18px; border-radius:20px; margin-top:12px; font-size:.9em; }
+.region { background:rgba(255,255,255,.95); border-radius:14px; padding:22px; margin:18px 0; box-shadow:0 3px 12px rgba(0,0,0,.12); }
+.region h2 { font-size:1.5em; margin-bottom:16px; border-bottom:3px solid rgba(0,0,0,.08); padding-bottom:10px; }
+.source { margin:16px 0 22px; }
+.source h3 { font-size:1.15em; color:#333; margin-bottom:6px; }
+.article { display:flex; gap:14px; align-items:flex-start; padding:12px 0; border-top:1px solid rgba(0,0,0,.05); }
+.article img { width:120px; height:90px; object-fit:cover; border-radius:8px; flex-shrink:0; }
+.article .body { flex:1; }
+.article a { color:#1a5c8a; font-weight:600; text-decoration:none; font-size:1.02em; }
+.article a:hover { text-decoration:underline; }
+.article .sum { color:#555; font-size:.92em; margin-top:3px; }
+footer { text-align:center; color:rgba(255,255,255,.9); padding:24px; font-size:.85em; }
+@media(max-width:600px) { .article { flex-direction:column; } .article img { width:100%; height:auto; } }
+</style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1><span class="title-icon">📖</span> <span class="title-main">Lichtenberg</span></h1>
-            <h2 class="title-sub">世界文学日报</h2>
-            <p>美洲 · 欧洲 · 非洲 · 亚洲</p>
-            <div class="update-time">更新时间: 2026年04月26日 03:13</div>
-        </header>
-        
-        <div class="card">
-            <h1>📖 Lichtenberg 世界文学日报 - 2026年04月26日</h1>
-
-<hr>
-
-<h2>🌎 美洲文学</h2>
-
-
-<h3>The New York Review of Books</h3>
-
-<ul class="article-list">
-<li><a href="https://www.nybooks.com/online/2026/04/25/we-goofed/" class="article-title" target="_blank" rel="noopener noreferrer">We Goofed</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://www.nybooks.com/wp-content/uploads/2026/04/Livingstone202604_4.jpeg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Yale University’s Beinecke Rare Book and Manuscript Library in New Haven, Connecticut, is a temple. Although the Beinecke is cuboid it has the atmosphere of a pyramid, flanked in faintly translucent marble slabs that suck light into the building and radiate it outward at the same time. A new literar...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.nybooks.com/articles/2026/05/14/manet-and-morisot-game-on-tallman/" class="article-title" target="_blank" rel="noopener noreferrer">Manet and Morisot: Game On</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://www.nybooks.com/wp-content/uploads/2026/04/tallman_1-051426-900.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>An important exhibition showcases a painterly repartee that altered the trajectory of the two artists’ work and, by extension, modern art itself....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.nybooks.com/articles/2026/05/14/the-music-of-what-happens-poems-of-seamus-heaney/" class="article-title" target="_blank" rel="noopener noreferrer">‘The Music of What Happens’</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://www.nybooks.com/wp-content/uploads/2026/04/heaney_seamus-051426-900.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Seamus Heaney’s complete poems, following on editions of his letters, prose, and translations, confirm the extent of his achievement....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.nybooks.com/articles/2026/05/14/art-for-our-age-of-chaos-new-humans-new-museum-whitney-biennial/" class="article-title" target="_blank" rel="noopener noreferrer">Art for Our Age of Chaos</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://www.nybooks.com/wp-content/uploads/2026/04/perl_1-051426-900.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>The 2026 Whitney Biennial and the New Museum’s exhibition “New Humans; Memories of the Future” are attempts to respond to a world full of darkness, trauma, and strife....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.nybooks.com/articles/2026/05/14/pentimenti-paul-muldoon/" class="article-title" target="_blank" rel="noopener noreferrer">Pentimenti</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://feeds.feedburner.com/nybooks" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>It was Jan van Eyck who first sent a ripplethrough greater Bruges by banishing both streakand stipple in a truly historicmoment that saw him painting “fat on lean”and leaving no trace of a brush stroke on either a girl’s sleek loinor the streamlined carcass of a bowhead whale.The process of scouring...</p></li>
-</ul>
-
-
-<h3>Paris Review - Interviews</h3>
-
-<ul class="article-list">
-<li><a href="https://www.theparisreview.org/blog/2026/04/24/the-ignorant-art-historian/" class="article-title" target="_blank" rel="noopener noreferrer">The Ignorant Art Historian: An Introduction</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://www.theparisreview.org/blog/wp-content/uploads/2026/04/1280px-hal-foster-2-1024x768.jpeg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>“One purpose of these studies is to be loosened from my scholarly superego (which isn’t very strong, in any case).”...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.theparisreview.org/blog/2026/04/23/art-of-the-libretto-nilo-cruz/" class="article-title" target="_blank" rel="noopener noreferrer">The Art of the Libretto: A Conversation with Nilo Cruz</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://www.theparisreview.org/blog/wp-content/uploads/2026/04/fridadiego-0303-s-1024x785.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>“The opera centers on artists Frida Kahlo and Diego Rivera—but not exactly as themselves.”...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.theparisreview.org/blog/2026/04/21/empire-plaza-state-of-mind/" class="article-title" target="_blank" rel="noopener noreferrer">Empire Plaza State of Mind</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://www.theparisreview.org/blog/wp-content/uploads/2026/04/egg-under-construction-1024x810.png" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>“The Plaza is a case study in the lengths to which New York’s leaders have gone to find gargantuan sums of money to enact wild new visions for the state.”...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.theparisreview.org/blog/2026/04/17/the-conundrums-of-jan-morris-a-conversation-with-sara-wheeler/" class="article-title" target="_blank" rel="noopener noreferrer">The Conundrums of Jan Morris: A Conversation with Sara Wheeler</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://www.theparisreview.org/blog/wp-content/uploads/2026/04/1280px-sunset-view-of-everest-1024x682.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>“A Forrest Gumpian figure.”...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.theparisreview.org/blog/2026/04/16/making-of-a-poem-jeffrey-angles/" class="article-title" target="_blank" rel="noopener noreferrer">Making of a Poem: Jeffrey Angles on “Memory of a Three-Year-Old”</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://www.theparisreview.org/blog/wp-content/uploads/2026/03/screenshot-2026-04-13-at-130321-1024x716.png" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>“I couldn’t spend another second thinking about parasitic roundworms.”...</p></li>
-</ul>
-
-
-<h3>Literary Hub</h3>
-
-<ul class="article-list">
-<li><a href="https://lithub.com/lit-hub-weekly-april-20-24-2026/" class="article-title" target="_blank" rel="noopener noreferrer">Lit Hub Weekly: April 20 – 24, 2026</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://s26162.pcdn.co/wp-content/uploads/2026/04/Jane-Jacobs-768x344.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Caroline Bicks unearths the word “clitter” and other wild discoveries while reading the first draft of Stephen King’s Pet Sematary. &#124; Lit Hub Criticism “Possibly the greatest lesson I got from the zine is that writing is about community.” How...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://lithub.com/haruki-murakami-has-a-new-novel-coming-out-and-for-the-first-time-it-features-a-female-main-character/" class="article-title" target="_blank" rel="noopener noreferrer">Haruki Murakami has a new novel coming out—and for the first time, it features a female main character.</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://s26162.pcdn.co/wp-content/uploads/2026/04/taleofkaho-768x432.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Haruki Murakami&#8217;s next novel, The Tale of KAHO, will be published on July 3rd by Shinchosha Publishing Co, the AP reports. This will be Murakami&#8217;s first full-length novel since 2023&#8217;s The City and its Uncertain Walls (published in the US...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://lithub.com/maria-revas-endling-has-won-the-2026-aspen-words-literary-prize/" class="article-title" target="_blank" rel="noopener noreferrer">Maria Reva’s Endling has won the 2026 Aspen Words Literary Prize.</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://s26162.pcdn.co/wp-content/uploads/2026/04/endling-768x432.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>At a ceremony last night, Aspen Words announced the winner of their annual Aspen Words Literary Prize, which awards $35,000 to &#8220;a work of fiction that illuminates a vital contemporary issue and demonstrates the transformative power of literature on thought and...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://lithub.com/one-great-poem-to-read-today-marie-howes-you-think-this-happened-only-once-and-long-ago/" class="article-title" target="_blank" rel="noopener noreferrer">One great poem to read today: Marie Howe’s “You Think This Happened Only Once and Long Ago”</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://s26162.pcdn.co/wp-content/uploads/2026/04/rowboat2-768x432.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>This April marks the 30th iteration of National Poetry Month, which was launched by the Academy of American Poets in April 1996. To celebrate, the Literary Hub staff will be recommending one great poem to read every (work) day of...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://lithub.com/lit-hub-daily-april-24-2026/" class="article-title" target="_blank" rel="noopener noreferrer">Lit Hub Daily: April 24, 2026</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://s26162.pcdn.co/wp-content/uploads/2026/04/willacather1-768x344.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>How early aughts “women’s fiction” helped Sarah Vacchiano survive divorce. &#124; Lit Hub Craft Geneen Roth explores the torture of diet culture and power of learning to live in (and love) her body. &#124; Lit Hub Memoir “I like art...</p></li>
-</ul>
-
-
-<h3>The Atlantic - Books</h3>
-
-<ul class="article-list">
-<li><a href="https://www.theatlantic.com/newsletters/2026/04/a-let-them-theory-of-ideas-copyright-mel-robbins/686923/?utm_source=feed" class="article-title" target="_blank" rel="noopener noreferrer">Who Came Up With That?</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://cdn.theatlantic.com/thumbor/7QHJoAQhDqUJGVCHPz6ah77Yrxo=/media/img/mt/2026/04/2026_04_24_A_Let_Them_Theory_of_Ideas/original.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Contrary to what we think of as intellectual property, most ideas are difficult to trace back to one human mind....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.theatlantic.com/books/2026/04/stewart-brands-lost-promise-maintenance-book-review/686898/?utm_source=feed" class="article-title" target="_blank" rel="noopener noreferrer">The Questionable Triumph of the ‘Baling Wire Hippies’</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://cdn.theatlantic.com/thumbor/ihaAdT2MJM2U36F9DfqH_41_CDY=/media/img/mt/2026/04/2026_04_17_StewartBrand/original.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Stewart Brand’s Whole Earth Catalog was seen as a countercultural milestone, but his new book reveals his alliances with the powerful....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.theatlantic.com/books/2026/04/fascinating-biography-life-recommendations/686883/?utm_source=feed" class="article-title" target="_blank" rel="noopener noreferrer">Eight of the Most Fascinating Biographies to Read</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://cdn.theatlantic.com/thumbor/eHFurD8I91QAI-9IoSX5KrBF5to=/media/img/mt/2026/04/2026_03_19_8books2_mpg/original.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Each is animated by the author’s love—for their subject, for language, and for pushing the boundaries of what the genre can do....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.theatlantic.com/books/2026/04/sisters-in-yellow-mieko-kawakami-book-review/686886/?utm_source=feed" class="article-title" target="_blank" rel="noopener noreferrer">Is Cohabitation the Feminist Future?</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://cdn.theatlantic.com/thumbor/zHgIhzlxS23hKPTSnLwUeATsurU=/0x570:4855x3301/media/img/mt/2026/04/2026_04_14_Women_Livving_Together/original.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Stories about women living together are proliferating—and offering alternative visions to the nuclear family....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.theatlantic.com/books/2026/04/andrew-durbin-biography-peter-hujar-and-paul-thek-book-review/686870/?utm_source=feed" class="article-title" target="_blank" rel="noopener noreferrer">Peter Hujar’s Photos Are All the Rage. He’d Be Shocked.</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://cdn.theatlantic.com/thumbor/qhuExw3YTMSB3jnoYVnx6AVlXTE=/media/img/mt/2026/04/2026_04_20_Hujar_Thek/original.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>A new biography brings the late photographer’s relationship with the artist Paul Thek to vivid life....</p></li>
-</ul>
-
-
-<h3>NPR Books</h3>
-
-<ul class="article-list">
-<li><a href="https://www.npr.org/2026/04/23/nx-s1-5797402/author-details-the-spy-network-that-took-on-americas-post-wwii-nazi-groups" class="article-title" target="_blank" rel="noopener noreferrer">Author details the spy network that took on America's post-WWII Nazi groups</a>
-<p class="abstract">In The Secret War Against Hate, Steven J. Ross details the racist, anti-Semitic groups that sprang up in the latter half of the 20th century — and the spy network that worked to bring them to justice....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.npr.org/2026/04/22/nx-s1-5794005/like-follow-subscribe-influencer-book-review" class="article-title" target="_blank" rel="noopener noreferrer">Family influencers make the lifestyle look good. But kids pay the price, new book says</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://npr.brightspotcdn.com/dims3/default/strip/false/crop/993x1500+0+0/resize/993x1500!/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2F59%2Fcf%2Ffbb0e65b4c3a9edeff91ac22a67a%2Flikefollow.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>What does it mean to monetize your offspring? To turn their childhood into content? In Like, Follow, Subscribe Fortesa Latifi explores what drives parents to become family influencers....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.npr.org/2026/04/21/nx-s1-5736111/want-to-lighten-your-mental-load-first-let-go-of-these-gender-myths" class="article-title" target="_blank" rel="noopener noreferrer">Want to lighten your mental load? First, let go of these gender myths</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://npr.brightspotcdn.com/dims3/default/strip/false/crop/1900x1069+0+0/resize/1900x1069!/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2F83%2F94%2F4e5873e0430e89ada92ceca4d7f0%2F260420-lk-drained-dig-16x9.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>"Men can't see the mess." "Women are better at chores." These myths position women to take on more emotional thinking, says researcher Leah Ruppanner. She shares what works to reclaim your headspace....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.npr.org/2026/04/20/nx-s1-5791617/american-library-association-challenged-books" class="article-title" target="_blank" rel="noopener noreferrer">The 11 most challenged books of 2025, according to the American Library Association</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://npr.brightspotcdn.com/dims3/default/strip/false/crop/2400x1600+0+0/resize/2400x1600!/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2Fe3%2F85%2F29cae0e3475abb3f4c8ffb32b24b%2Ftop-11-covers-composite-image.png" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>The ALA says 4,235 titles were challenged at U.S. libraries — the second-highest year on record. Forty percent of the challenged works involved LGBTQ+ subjects or the experiences of people of color....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.npr.org/2026/04/20/nx-s1-5791491/malala-yousafzai-on-life-before-and-after-being-shot-by-a-taliban-gunman" class="article-title" target="_blank" rel="noopener noreferrer">Malala Yousafzai on life before and after being shot by a Taliban gunman</a>
-<p class="abstract">As a teen, Yousafzai risked her life speaking out against the Taliban. "At the time, what scared me more was a life without an education as a girl," the Nobel-winner told Terry Gross at a live event....</p></li>
-</ul>
-
-
-<h3>Quill & Quire</h3>
-
-<ul class="article-list">
-<li><a href="https://quillandquire.com/awards/2018/05/17/ben-ladouceur-trish-salah-and-joshua-whitehead-named-dayne-ogilvie-prize-finalists/" class="article-title" target="_blank" rel="noopener noreferrer">Ben Ladouceur, Trish Salah, and Joshua Whitehead named Dayne Ogilvie Prize finalists</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://quillandquire.com/wp-content/uploads/2018/06/FrontmatterJulyAugust_PersonalEssay_JoshuaWhithead_CR-JoshuaWhitehead.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Three poets have been nominated for the 2018 Dayne Ogilvie Prize for LGBTQ Emerging Writers.</p></li>
-</ul>
-The post Ben Ladouceur, Trish Salah, and Joshua Whitehead named Dayne Ogilvie Prize finalists first appeared on Quill and Quire....
-
-<ul class="article-list">
-<li><a href="https://quillandquire.com/awards/2018/03/05/unbound-ukrainian-canadians-writing-home-anthology-wins-2018-kobzar-literary-award/" class="article-title" target="_blank" rel="noopener noreferrer">Unbound: Ukrainian Canadians Writing Home anthology wins 2018 Kobzar Literary Award</a>
-
-<li><a href="https://quillandquire.com/childrens-publishing/2018/03/05/shortlist-announced-for-the-elizabeth-mrazik-cleaver-picture-book-award/" class="article-title" target="_blank" rel="noopener noreferrer">Shortlist announced for the Elizabeth Mrazik-Cleaver Picture Book Award</a>
-<p class="abstract">The nominees for the 2017 Elizabeth Mrazik-Cleaver Picture Book Award include Sydney Smith and Gabrielle Grimard.</p></li>
-</ul>
-The post Shortlist announced for the Elizabeth Mrazik-Cleaver Picture Book Award first appeared on Quill and Quire....
-
-<ul class="article-list">
-<li><a href="https://quillandquire.com/awards/2018/02/26/tanya-talaga-wins-rbc-taylor-prize-for-seven-fallen-feathers/" class="article-title" target="_blank" rel="noopener noreferrer">Tanya Talaga wins RBC Taylor Prize for Seven Fallen Feathers</a>
-<p class="abstract">Toronto journalist Tanya Talaga has won the RBC Taylor Prize for Seven Fallen Feathers: Racism, Death, and Hard Truths in a Northern City (House of Anansi Press).</p></li>
-</ul>
-The post Tanya Talaga wins RBC Taylor Prize for Seven Fallen Feathers first appeared on Quill and Quire....
-
-<ul class="article-list">
-<li><a href="https://quillandquire.com/awards/2018/02/26/gary-geddes-wins-writers-union-freedom-to-read-award/" class="article-title" target="_blank" rel="noopener noreferrer">Gary Geddes wins Writers’ Union Freedom to Read Award</a>
-<p class="abstract">Author, poet, and translator Gary Geddes has been awarded the 2018 Freedom to Read Award.</p></li>
-</ul>
-The post Gary Geddes wins Writers’ Union Freedom to Read Award first appeared on Quill and Quire....
-
-
-<h3>Latin American Literature Today</h3>
-
-<ul class="article-list">
-<li><a href="https://latinamericanliteraturetoday.org/2026/03/co-translating-all-that-dies-in-april-a-conversation-between-will-morningstar-and-samantha-schnee/" class="article-title" target="_blank" rel="noopener noreferrer">Co-Translating All That Dies in April: A Conversation between Will Morningstar and Samantha Schnee</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://latinamericanliteraturetoday.org/wp-content/uploads/2026/03/Portada_All-That-Dies-in-April.webp" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>All That Dies in April, a novel by Argentine writer Mariana Travacio, was published in English by World Editions in September 2025, in co-translation by Will Morningstar and Samantha Schnee. In this conversation, Samantha and Will discuss the surprises and challenges of this team effort, the benefit...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://latinamericanliteraturetoday.org/2026/03/the-classics-are-old-dogs-affectionate-ones-a-conversation-with-antonio-rivero-taravillo/" class="article-title" target="_blank" rel="noopener noreferrer">“The classics are old dogs, affectionate ones”: A Conversation with Antonio Rivero Taravillo</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://latinamericanliteraturetoday.org/wp-content/uploads/2026/03/Portada_1922-1.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>In the work of Antonio Rivero Taravillo (1963–2025), literature occupies a central place. Novels such as Los huesos olvidados, Los fantasmas de Yeats, and 1922 offer clear proof of this. He received the Antonio Domínguez Ortiz Prize for his study of the life of Juan Eduardo Cirlot and the Premio Com...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://latinamericanliteraturetoday.org/2026/03/a-poem-for-berta-caceres/" class="article-title" target="_blank" rel="noopener noreferrer">A Poem for Berta Cáceres</a>
-<p class="abstract">March 3, 2016 We grieve for Honduras Like the twin sister Who suffers at the same time as the heart We grieve Because we carry a sea of blood that unifies us Because for every thorn that wounds us Grandparents parents And siblings bleed. It breaks our soul To know that foreign gunpowder Keeps explod...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://latinamericanliteraturetoday.org/2026/03/the-irreparable-translated-by-paul-filev/" class="article-title" target="_blank" rel="noopener noreferrer">The Irreparable, translated by Paul Filev</a>
-<p class="abstract">These “stories are deft and quietly (and sometimes deeply) unsettling, and the sense of the characters’ lostness is at once palpable and relatable.” — Brian Evenson &#160; The Irreparable is a collection of six stories by Venezuelan author Gabriel Payares, translated into English for the first time ...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://latinamericanliteraturetoday.org/2026/03/even-time-bleeds-translated-by-forrest-gander/" class="article-title" target="_blank" rel="noopener noreferrer">Even Time Bleeds, translated by Forrest Gander</a>
-<p class="abstract">Even Time Bleeds is a revelatory selection of the work of Jeannette Clariond, a major contemporary Mexican poet known for her sensuous lyricism and philosophical gravity. Translated and introduced by Pulitzer Prize-winning poet Forrest Gander, this volume gathers poems from across Clariond’s career ...</p></li>
-</ul>
-
-
-<hr>
-
-<h2>🌍 欧洲文学</h2>
-
-
-<h3>The Guardian - Books</h3>
-
-<ul class="article-list">
-<li><a href="https://www.theguardian.com/books/2026/apr/25/i-saw-the-backlash-coming-civil-rights-activist-kimberle-crenshaw-on-america-and-race" class="article-title" target="_blank" rel="noopener noreferrer">‘I saw the backlash coming’: civil rights activist Kimberlé Crenshaw on America and race</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://i.guim.co.uk/img/media/4722c26411fbff981aeeba6153f0bd3161933a73/0_79_3873_3099/master/3873.jpg?width=140&quality=85&auto=format&fit=max&s=d73a9690031a0eca2f49af3ef27cb018" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>She coined the term ‘intersectionality’ and helped to develop critical race theory, now her life’s work is under attack by Washington’s war on ‘woke’. As her memoir is published, the legal scholar explains why she’ll never stop speaking truth to powerWhen Donald Trump returned to office in January l...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.theguardian.com/books/2026/apr/24/haruki-murakami-first-novel-to-feature-woman-sole-protagonist-the-tale-of-kaho" class="article-title" target="_blank" rel="noopener noreferrer">Haruki Murakami to publish first novel to feature woman as lead character</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://i.guim.co.uk/img/media/972d2602ace2d83bb74c0835ece9ed3c6267d99a/313_0_3981_3186/master/3981.jpg?width=140&quality=85&auto=format&fit=max&s=bb77bd185b286d49df495fe931fc0a3d" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>The Tale of Kaho, out in July, will be 16th novel by Japanese author who has faced criticism for portrayal of womenThe Japanese novelist Haruki Murakami will publish his first novel to feature a woman as the main character this summer.The Tale of Kaho will be published in Japan on 3 July, with an eb...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.theguardian.com/books/2026/apr/24/joe-dunthorne-growing-up-in-swansea-i-developed-an-allergy-to-dylan-thomas" class="article-title" target="_blank" rel="noopener noreferrer">Joe Dunthorne: ‘Growing up in Swansea, I developed an allergy to Dylan Thomas’</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://i.guim.co.uk/img/media/f9552a17cff39d3ae468590f946182196acfbc01/100_819_1170_934/master/1170.jpg?width=140&quality=85&auto=format&fit=max&s=2d493a78c2edb8e741fcae3154b0cfa7" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>The author on feeling Thomas Hardy’s pain, being duped by Donna Tartt and how reading his sister’s copy of Trainspotting made him want to writeMy earliest reading&nbsp;memory</p></li>
-</ul>
- I only realised how well I&nbsp;knew the Alfie stories by Shirley Hughes when I started reading them to my own children. Eve...
-
-<ul class="article-list">
-<li><a href="https://www.theguardian.com/books/2026/apr/24/the-body-builders-by-albertine-clarke-review-a-compelling-debut-of-mental-meltdown" class="article-title" target="_blank" rel="noopener noreferrer">The Body Builders by Albertine Clarke review – a compelling debut of mental meltdown</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://i.guim.co.uk/img/media/b506f1bb74a04d84ff83427387bd585faabfc50d/92_1531_3603_2882/master/3603.jpg?width=140&quality=85&auto=format&fit=max&s=eb88543c3868551fba83ac6d931a853b" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>A young woman’s dissociation from reality and her road to recovery are vividly rendered in this striking novel Meet Ada, the anguished young narrator of 26-year-old Albertine Clarke’s radically strange and engrossing debut novel. Adrift in London, Ada occupies herself by swimming in her apartment’s ...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.theguardian.com/books/2026/apr/24/children-and-teens-roundup-the-best-new-picture-books-and-novels" class="article-title" target="_blank" rel="noopener noreferrer">Children and teens roundup – the best new picture books and novels</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://i.guim.co.uk/img/media/2a963cac44260b7ff172e13099a025d54ee30442/1648_22_3769_3016/master/3769.jpg?width=140&quality=85&auto=format&fit=max&s=18ad39e71730c67c9884dcc108cc4a4f" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>An imposter monkey, an underworld princess, art’s female trailblazers, and YA tales of fear, family and friendshipOur World: Nigeria by Bunmi Emenanjo and Diana Ejaita, Barefoot Books, £7.99Part of a delightful educational series from a brilliant inclusive publisher, this colourful, joyous board boo...</p></li>
-</ul>
-
-
-<h3>Granta Magazine</h3>
-
-<ul class="article-list">
-<li><a href="https://granta.com/the-barefoot-boys-of-1999/" class="article-title" target="_blank" rel="noopener noreferrer">The Barefoot Boys of 1999</a>
-<p class="abstract">‘And brand-new switchblades / for future beards and defending our honour.’ </p></li>
-</ul>
- A poem by Victor Heringer, translated from the Portuguese by James Young and Justin Greene.
-The post The Barefoot Boys of 1999 appeared first on Granta....
-
-<ul class="article-list">
-<li><a href="https://granta.com/principal-witness/" class="article-title" target="_blank" rel="noopener noreferrer">Principal Witness</a>
-<p class="abstract">‘The summons made clear that if I failed to turn up (which I had), a warrant could be issued for my arrest.’ </p></li>
-</ul>
- Izabella Scott on court testimonies.
-The post Principal Witness appeared first on Granta....
-
-<ul class="article-list">
-<li><a href="https://granta.com/mark-making/" class="article-title" target="_blank" rel="noopener noreferrer">Mark Making</a>
-<p class="abstract">‘The work was pastoral, somehow the artistic equivalent of really liking Wordsworth – just a little too pretty to be serious.’</p></li>
-</ul>
-Orlando Whitfield on taste.
-The post Mark Making appeared first on Granta....
-
-<ul class="article-list">
-<li><a href="https://granta.com/my-mother-told-me-monsters-do-not-exist/" class="article-title" target="_blank" rel="noopener noreferrer">My Mother Told Me Monsters Do Not Exist</a>
-<p class="abstract">‘That thing behind the door was so filthy, so repugnant, that I couldn’t imagine anyone I could call for help.’</p></li>
-</ul>
-Fiction by Marie Darrieussecq, translated by Penny Hueston.
-The post My Mother Told Me Monsters Do Not Exist appeared first on Granta....
-
-<ul class="article-list">
-<li><a href="https://granta.com/picture-me-crying/" class="article-title" target="_blank" rel="noopener noreferrer">Picture Me Crying</a>
-<p class="abstract">‘Almost nobody has ever seen me cry. This has been true my entire life.’</p></li>
-</ul>
-Rachel Connolly on accessing vulnerability. 
-The post Picture Me Crying appeared first on Granta....
-
-
-<h3>Le Monde des Livres</h3>
-
-<ul class="article-list">
-<li><a href="https://www.lemonde.fr/livres/article/2026/04/26/histoire-du-nouveau-livre-de-gregoire-bouillier-un-printemps-avec-arsene-lupin-a-l-invitation-de-radio-france-l-auteur-a-enquete-sur-le-celebre-gentleman-cambrioleur-et-le-pouvoir-du-romanesque_6683442_3260.html" class="article-title" target="_blank" rel="noopener noreferrer">Histoire du nouveau livre de Grégoire Bouillier, « Un printemps avec Arsène Lupin » : à l’invitation de Radio France, l’auteur a enquêté sur le célèbre gentleman cambrioleur et le pouvoir du romanesque</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://img.lemde.fr/2026/04/21/3/0/1892/946/644/322/60/0/3bd5764_upload-1-ij1t3sfs4782-rv-17467-1.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Pour honorer cette commande d’une série de podcast destinée à France Inter, l’écrivain a écrit trois versions : un premier jet, hors cadre, resté impublié ; les 40 épisodes du podcast ; le livre issu de ces derniers....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.lemonde.fr/m-le-mag/article/2026/04/26/a-vanves-le-destin-croise-d-exiles-russes-de-la-poetesse-disparue-marina-tsvetaeva-aux-refugies-de-vladimir-poutine_6683430_4500055.html" class="article-title" target="_blank" rel="noopener noreferrer">A Vanves, le destin croisé d’exilés russes, de la poétesse disparue Marina Tsvetaeva aux réfugiés de Vladimir Poutine</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://img.lemde.fr/2026/04/20/2/0/1500/750/644/322/60/0/39ea3cf_ftp-1-kws63cirixqm-425483-3467779.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>A Vanves, en banlieue parisienne, un petit cercle littéraire cultive le souvenir de la grande poétesse russe Marina Tsvetaeva dans l’appartement où elle a vécu quatre ans, avant de retourner en Russie et de s’y donner la mort, en 1941. Désillusion, culpabilité, nostalgie… Les émigrés d’aujourd’hui, ...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.lemonde.fr/livres/article/2026/04/25/vincent-azoulay-helleniste-ce-qui-m-anime-c-est-la-question-de-la-democratie-de-la-fraternite-de-l-autolimitation-par-le-biais-du-theatre-de-la-comedie-des-rumeurs_6683270_3260.html" class="article-title" target="_blank" rel="noopener noreferrer">Vincent Azoulay, helléniste : « Ce qui m’anime, c’est la question de la démocratie, de la fraternité, de l’autolimitation par le biais du théâtre, de la comédie, des rumeurs »</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://img.lemde.fr/2026/04/21/730/0/4480/2240/644/322/60/0/183a9af_upload-1-lvw06zjrbeb1-azoulay-alcock-008.JPG" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Rencontre avec l’une des figures de proue de la nouvelle école française d’histoire antique, qui ne craint pas de faire des allers-retours entre passé et contemporain. Son nouveau livre, « Ostracisme ! Du bon usage de l’arbitraire en démocratie », l’atteste....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.lemonde.fr/idees/article/2026/04/25/andrei-kozovoi-historien-le-livre-est-une-arme-ideologique-majeure_6683244_3232.html" class="article-title" target="_blank" rel="noopener noreferrer">Andreï Kozovoï, historien : « Le livre est une arme idéologique majeure »</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://img.lemde.fr/2026/02/25/125/0/1500/750/644/322/60/0/ab86f61_upload-1-a5cx556gox5e-frame-1013.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Dans une tribune au « Monde », l’auteur d’un roman paru chez Grasset en 2025 rappelle que le livre fut, de la Russie soviétique à celle de Vladimir Poutine, au cœur des préoccupations idéologiques du Kremlin. Il met en garde contre les menaces qui pèsent sur le monde de l’édition et appelle à consid...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.lemonde.fr/livres/article/2026/04/25/l-ecrivaine-argentine-samanta-schweblin-l-une-des-fortes-voix-de-la-litterature-latino-americaine-contemporaine_6683206_3260.html" class="article-title" target="_blank" rel="noopener noreferrer">L’écrivaine argentine Samanta Schweblin, l’une des fortes voix de la littérature latino-américaine contemporaine</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://img.lemde.fr/2026/04/22/610/0/4134/2067/644/322/60/0/231ce2f_upload-1-emf4tjnlix6v-997119-001.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>L’autrice fonde ses romans et nouvelles sur l’étrangeté qui fait trembler la frontière entre le réel et l’irréel. Les six nouvelles du « Bon Mal » confirment ce talent pour le malaise....</p></li>
-</ul>
-
-
-<h3>Frankfurter Allgemeine - Bücher</h3>
-
-<ul class="article-list">
-<li><a href="https://www.faz.net/aktuell/feuilleton/buecher/frankfurter-anthologie/lyrik-von-thomas-brasch-in-der-frankfurter-anthologie-200765259.html" class="article-title" target="_blank" rel="noopener noreferrer">Frankfurter Anthologie: Thomas Brasch: „Ansturm der Windstille“</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://media0.faz.net/image/b133bec242cf/w2703h1520x0y0/202604/de5656e0-3fca-11f1-a9bb-63f79e308ac4/thomas-brasch-1945-bis-2001.webp" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Dem Osten den Rücken gekehrt, im Westen nie ganz heimisch geworden: Ein Gedicht über die Perspektive des Exilanten und das grenzübergreifende Gefühl des Stillstands....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.faz.net/aktuell/feuilleton/buecher/literatur/sharon-dodua-otoos-roman-so-in-etwa-ist-es-geschehen-200761250.html" class="article-title" target="_blank" rel="noopener noreferrer">Sharon Dodua Otoo: Wenn sich Überleben und Edelmut ausschließen</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://media0.faz.net/image/a6eb753446ec/w3271h1840x1588y579/202604/c5813f0c-3e41-11f1-b860-f1d4634e77d5/will-es-ihren-lesern-nicht-zu.webp" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Wie viel Gewalt- und Kolonialgeschichte passt in ein paar Stunden auf der Autobahn? Im neuen Roman der Bachmannpreisträgerin Sharon Dodua Otoo, „So, in etwa, ist es geschehen“,  fährt die Protagonistin alles an die Wand....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.faz.net/aktuell/feuilleton/buecher/goethe-verfuehrung-gustav-seibts-wege-zur-lektuere-des-werks-200764392.html" class="article-title" target="_blank" rel="noopener noreferrer">Goethe lieben Lernen: Er will gelesen werden, nicht gelesen sein</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://media0.faz.net/image/9befd31c11ff/w3000h1688x0y401/202604/017df3da-3fb7-11f1-a9bb-63f79e308ac4/ihre-italiensehnsucht.webp" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Was die meisten Deutschlehrer vermissen lassen, liefert Gustav Seibt: ansteckende Begeisterung für Goethe. Mit seinem Buch „Ein Sommer mit Goethe“ macht er Werbung für den Nationaldichter....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.faz.net/aktuell/feuilleton/buecher/literatur/die-allerschoenste-taeuschung-accg-200765875.html" class="article-title" target="_blank" rel="noopener noreferrer">Buchmesse-Gastland Tschechien: Das mythische Prag - eine Erfindung der Literatur?</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://media0.faz.net/image/b3e5fc57ad40/w5302h2982x228y0/202604/4e343c80-3f07-11f1-b860-f1d4634e77d5/hier-waechst-das-neue.webp" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Tschechien ist Gastland der diesjährigen Buchmesse in Frankfurt. Eine Reise nach Böhmen gibt Ausblicke auf den literarischen Herbst - und zeigt, dass hier eine neue, spannende Schriftstellergeneration heranwächst...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://www.faz.net/aktuell/feuilleton/buecher/sachbuch/fotograf-fred-stein-seine-portraets-kennt-die-welt-ihn-hat-man-vergessen-200760700.html" class="article-title" target="_blank" rel="noopener noreferrer">Fotograf Fred Stein: Seine Porträts kennt die ganze Welt – ihn hat man vergessen</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://media0.faz.net/image/a6a812832221/w2920h1642x0y814/201402/431.0.39959594/hannah-arendt-im-jahr-1944.webp" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Einstein, Arendt, Brandt, Brecht – über 1200 Porträts schoss Fred Stein. Nach seinem Tod 1967 kannte kaum jemand mehr seinen Namen. Daniel Siemens erzählt die bewegte Geschichte des Mannes hinter der Kamera....</p></li>
-</ul>
-
-
-<h3>El País - Libros</h3>
-
-<ul class="article-list">
-<li><a href="https://elpais.com/videos/2026-04-26/javier-cercas-el-pais-no-solo-ha-tolerado-que-escribiese-contra-su-linea-editorial-sino-que-lo-ha-estimulado.html" class="article-title" target="_blank" rel="noopener noreferrer">Javier Cercas: “EL PAÍS no solo ha tolerado que escribiese contra su línea editorial, sino que lo ha estimulado”</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://imagenes.elpais.com/resizer/v2/2ZKMSHV5GBABZAHSZGNVZHYTLQ.jpg?auth=883f3fb4c4f86adbccd75e6004a35c18e754c724535b0eead1563035748efc45" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Episodio especial en vídeo de ‘Hoy en EL PAÍS’ con la entrevista al escritor por la publicación de ‘El periódico de la democracia’...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://elpais.com/cultura/2026-04-26/anselm-kiefer-una-grandeza-hecha-de-ruinas.html" class="article-title" target="_blank" rel="noopener noreferrer">Anselm Kiefer: una grandeza hecha de ruinas</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://imagenes.elpais.com/resizer/v2/KQQTAUKCJFAE5FXUOL66JAUDPA.jpg?auth=bb18691e458a0c69eb28747b29d040dfadcab072c0859089938fb99a09d81f80" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>El Centro Hortensia de Valencia inaugura la próxima semana una exposición individual del gran titán del arte contemporáneo...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://elpais.com/cultura/2026-04-26/a-el-ultimo-de-la-fila-le-cuesta-despegar-en-el-primer-concierto-de-su-gira-de-regreso-en-fuengirola.html" class="article-title" target="_blank" rel="noopener noreferrer">A El Último de la Fila le cuesta despegar en el primer concierto de su gira de regreso en Fuengirola</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://imagenes.elpais.com/resizer/v2/NRUKAJLKTFH75BS75XTZ3TOGWM.jpg?auth=70c2dcd003155d36a4a72774f452c3ec7e080f43124e135305bfdbed58a1bb87" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>El grupo, que llevaba 30 años sin actuar, convoca a 18.500 personas en Marenostrum en un espectáculo al que le faltó la euforia que se merecía...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://elpais.com/cultura/2026-04-26/como-el-rayo-que-no-cesa-la-constante-defensa-de-la-propiedad-intelectual.html" class="article-title" target="_blank" rel="noopener noreferrer">Como el rayo que no cesa: la constante defensa de la propiedad intelectual</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://imagenes.elpais.com/resizer/v2/EOJDIOOTMJAMZPUFEQTDV6EAD4.jpg?auth=e6eaf821b1333efbc7d41ebd3a16dd3dd2a76f230160ae8c878c598d5e2efbef" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>La IA no debe poner en cuestión los principios rectores básicos del derecho de creación...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://elpais.com/cultura/2026-04-25/reencuentro-con-nijinsky-en-el-liceo.html" class="article-title" target="_blank" rel="noopener noreferrer">Reencuentro con Nijinsky en el Liceo</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://imagenes.elpais.com/resizer/v2/V56FLQTRHRE2VIDQEZZ4LLG4O4.jpg?auth=3576f0535074ae7f24592b80a84b0d248cc7e43d5c25605c61f31ffbe5b66564" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>El magnífico espectáculo del Hamburg Ballet sobre el bailarín es una buena ocasión para repasar la vida del legendario personaje, su locura y su fabuloso salto...</p></li>
-</ul>
-
-
-<hr>
-
-<h2>🌍 非洲文学</h2>
-
-
-<h3>Brittle Paper</h3>
-
-<ul class="article-list">
-<li><a href="https://brittlepaper.com/2026/04/ake-arts-book-festival-announces-dates-for-its-14th-edition-19-to-21-november-2026/" class="article-title" target="_blank" rel="noopener noreferrer">Aké Arts & Book Festival Announces Dates for Its 14th Edition | 19 to 21 November 2026</a>
-<p class="abstract">Aké Arts &#38; Book Festival, Nigeria&#8217;s most beloved literary gathering is returning to Lagos this November. The festival has confirmed that its 14th edition will hold in Lagos from 19 to 21 November 2026. If history is anything to go by, it is going to be worth the wait. For over a decade, Ak...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://brittlepaper.com/2026/04/cassava-republic-press-becomes-the-first-african-owned-black-and-woman-led-independent-press-to-land-on-the-womens-prize-for-fiction-shortlist-in-the-awards-thirty-year-history/" class="article-title" target="_blank" rel="noopener noreferrer">Cassava Republic Press Becomes the First African-Owned, Black and Woman-Led Independent Press to Land on the Women’s Prize for Fiction Shortlist in the Award’s Thirty-Year History</a>
-<p class="abstract">The 2026 Women&#8217;s Prize for Fiction shortlist is out, and it has delivered a moment that African literature will want to remember. Marcia Hutchinson&#8217;s The Mercy Step, published by Cassava Republic Press, has made the cut, one of six novels selected from what was already a strong longlist!...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://brittlepaper.com/2026/04/soko-ngito-makena-fiction/" class="article-title" target="_blank" rel="noopener noreferrer">Soko | Ngito Makena | Fiction</a>
-<p class="abstract">&#160; I hate being in the market, which is probably the most un-African thing I have ever said. As a black girl, voluptuous, with unruly hair that defies whatever Sir Isaac Newton was on about, this should not be an opinion I hold so deeply. But I do. Soko demands too much of me, from [&#8230;]...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://brittlepaper.com/2026/04/dust-divinity-desire-reclaiming-queerness-in-pre-colonial-west-africa-emmanuel-aneriba-iga-essay/" class="article-title" target="_blank" rel="noopener noreferrer">Dust, Divinity & Desire: Reclaiming Queerness in Pre-Colonial West Africa | Emmanuel Aneriba-Iga | Essay</a>
-<p class="abstract">&#160; Ghanaian queerness is often framed as a western concept, yet the laws that criminalise queer identities are themselves western colonial imports. What is defended as cultural preservation is, in many ways, inherited Victorian and missionary morality. Before queerness was criminalised, it was c...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://brittlepaper.com/2026/04/750-wisconsin-high-schoolers-showed-up-for-nnedi-okorafor-see-all-the-photos/" class="article-title" target="_blank" rel="noopener noreferrer">750 Wisconsin High Schoolers Showed Up for Nnedi Okorafor | See All the Photos!</a>
-<p class="abstract">On April 7th, 2026, the University of Wisconsin–Madison, one of the largest public universities in the US, hosted an event celebrating African literature. Over 750 high school students from across the state of Wisconsin gathered for the annual Great World Texts student conference, this year centered...</p></li>
-</ul>
-
-
-<h3>The Johannesburg Review of Books</h3>
-
-<ul class="article-list">
-<li><a href="https://johannesburgreviewofbooks.com/2025/12/15/the-jrb-fiction-issue-vol-9-issue-3-december-2025/" class="article-title" target="_blank" rel="noopener noreferrer">The JRB Fiction Issue! (Vol. 9, Issue 3, December 2025)</a>
-<p class="abstract">Wamuwi Mbao • Makhosazana Xaba • Simon van Schalkwyk • Khadija Tracey Heeger • Sean Jacobs • Barbara Boswell •......</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://johannesburgreviewofbooks.com/2025/12/15/a-reluctant-complicated-love-story-spanning-the-globe-and-a-myriad-natural-disasters-barbara-boswell-reviews-ice-shock-by-elleke-boehmer/" class="article-title" target="_blank" rel="noopener noreferrer">‘A reluctant, complicated love story spanning the globe and a myriad natural disasters’—Barbara Boswell reviews Ice Shock by Elleke Boehmer</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://johannesburgreviewofbooks.com/wp-content/uploads/2025/08/Ice-Shock-Elleke-Boehmer-195x300.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Barbara Boswell reviews Elleke Boehmer&#8217;s Ice Shock, a novel saturated with extremes of love and increasingly calamitous climate events. Ice......</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://johannesburgreviewofbooks.com/2025/12/15/sponsored-listen-to-an-excerpt-from-cursed-daughters-the-glittering-follow-up-to-the-award-winning-bestseller-my-sister-the-serial-killer/" class="article-title" target="_blank" rel="noopener noreferrer">[Sponsored] Listen to an excerpt from Cursed Daughters—the glittering follow-up to the award-winning bestseller My Sister, the Serial Killer</a>
-<p class="abstract">Cursed Daughters—the highly anticipated new novel from Oyinkan Braithwaite—is out now from Jonathan Ball Publishers! Braithwaite is a Nigerian–British novelist......</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://johannesburgreviewofbooks.com/2025/12/15/always-in-search-of-uncompromising-honesty-in-a-compromised-and-compromising-world-kevin-goddard-reviews-kelwyn-soles-latest-collection-of-poetry-what-is-owed/" class="article-title" target="_blank" rel="noopener noreferrer">‘Always in search of uncompromising honesty in a compromised and compromising world’—Kevin Goddard reviews Kelwyn Sole’s latest collection of poetry, What is Owed?</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://johannesburgreviewofbooks.com/wp-content/uploads/2025/12/what-is-owed-kelwyn-sole-212x300.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Kevin Goddard reviews What is Owed? by Kelwyn Sole—a poet’s summing up of a life dedicated both to verse and......</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://johannesburgreviewofbooks.com/2025/12/15/can-we-engage-with-power-without-being-corrupted-by-it-sean-jacobs-reviews-mahmood-mamdanis-new-book-slow-poison-idi-amin-yoweri-museveni-and-the-making-of-the-ugandan-state/" class="article-title" target="_blank" rel="noopener noreferrer">Can we engage with power without being corrupted by it? Sean Jacobs reviews Mahmood Mamdani’s new book, Slow Poison: Idi Amin, Yoweri Museveni, and the Making of the Ugandan State</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://johannesburgreviewofbooks.com/wp-content/uploads/2025/12/Slow-Poison-Mahmood-Mamdani-200x300.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Sean Jacobs reviews Slow Poison by Mahmood Mamdani, a rich and textured account of Ugandan and postcolonial African politics, and......</p></li>
-</ul>
-
-
-<h3>Saraba Magazine</h3>
-
-<ul class="article-list">
-<li><a href="https://sarabamag.com/whiskey/" class="article-title" target="_blank" rel="noopener noreferrer">Whiskey</a>
-<p class="abstract">There will be no nightmares to threaten me with a troop of teeth.  No shadows that cling onto walls &#38; heighten all I fear.  Tonight, the flesh acknowledges its episodes of panic.  How often it has bred a populace of anxieties &#38; silenced the aftermath. I uncork a Jack Daniel’s, nearly fill  a...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://sarabamag.com/them/" class="article-title" target="_blank" rel="noopener noreferrer">Them</a>
-<p class="abstract">First of all, I have changed. I am hearing voices and I know that they are not real. I’ve been smoking too much weed for far too long, and now I have damaged my brain. I have fucked up. I smoke blunts – every day from 5pm until I pass out on the sofa watching [&#8230;]</p></li>
-</ul>
-The post Them appeared first o...
-
-<ul class="article-list">
-<li><a href="https://sarabamag.com/florence/" class="article-title" target="_blank" rel="noopener noreferrer">Florence</a>
-<p class="abstract">I did not marry Obadiah for love, even though such marriages were becoming fashionable. I had to get him because Florence had her toji-lined eyes on him. Florence was a better catch. Florence had finished primary school with the White men. My education was aborted at Form Two because I was beautiful...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://sarabamag.com/alice/" class="article-title" target="_blank" rel="noopener noreferrer">Alice</a>
-<p class="abstract">Minutes before entering the bookstore, I stood outside and looked through a large, dim window. My bleary vision scanned the Hot Picks’ section, the Best Sellers’ section, then through and through to all the other visible parts of the bookstore. It was while scanning that I spotted you.  Behind me, K...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://sarabamag.com/the-land-of-fables/" class="article-title" target="_blank" rel="noopener noreferrer">The Land of Fables</a>
-<p class="abstract">We lived in the town before it became a city. Before the construction of the lifesaving bridges, which annoyed people so much that they named them Confusion. We lived in the town before 24-hour television. Before the arrival of the internet and mobile phones. Before democracy. Before fila-wearing go...</p></li>
-</ul>
-
-
-<hr>
-
-<h2>🌏 亚洲文学</h2>
-
-
-<h3>China Daily - Books</h3>
-
-<ul class="article-list">
-<li><a href="http://www.chinadaily.com.cn/culture/2017-11/24/content_34927026.htm" class="article-title" target="_blank" rel="noopener noreferrer">Author Weir takes readers to the moon in Artemis</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://www.chinadaily.com.cn/culture/attachement/jpg/site1/20171124/b083fe96fb621b81b45f25.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Andy Weir, author of The Martian, takes readers to another desolate world, but instead of the Red Planet it's the moon, in his new novel, Artemis....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="http://www.chinadaily.com.cn/culture/2017-11/24/content_34925478.htm" class="article-title" target="_blank" rel="noopener noreferrer">Book Boom</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://www.chinadaily.com.cn/culture/attachement/jpg/site1/20171124/b083fe96fb621b81ae8b22.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>The 5th China Shanghai International Children's Book Fair attested to growing interest in Chinese publications from local readers and international publishers alike....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="http://www.chinadaily.com.cn/culture/2017-11/23/content_34895987.htm" class="article-title" target="_blank" rel="noopener noreferrer">Sharing economy turns new page with books</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://www.chinadaily.com.cn/culture/attachement/jpg/site1/20171123/d8cb8a51564a1b80a6b306.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>From sharing bicycle to sharing car, China's sharing economy has now swept into the book industry....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="http://www.chinadaily.com.cn/culture/2017-11/23/content_34885192.htm" class="article-title" target="_blank" rel="noopener noreferrer">Tencent funds digital library in Kenya</a>
-<p class="abstract">The National Museums of Kenya in partnership with the United Nations Educational, Scientific and Cultural Organization launched an open digital library for indigenous games funded by the Chinese firm Tencent Holdings Ltd on Monday....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="http://www.chinadaily.com.cn/culture/2017-11/22/content_34857584.htm" class="article-title" target="_blank" rel="noopener noreferrer">EU-China Literary Festival promotes cultural communications</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://www.chinadaily.com.cn/culture/attachement/jpg/site1/20171122/f04da2db14841b7f7b0f35.jpg" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>The first EU-China Literary Festival was held in Beijing on Tuesday. By inviting 28 award-winning authors from the European Union and China, the festival set out to promote cultural exchanges between the two sides and give insights into the lives, works, and unique character of their literary tradit...</p></li>
-</ul>
-
-
-<h3>ArabLit & ArabLit Quarterly</h3>
-
-<ul class="article-list">
-<li><a href="https://arablit.org/2026/04/24/unlocking-palestine-sara-yasin-on-editing-the-key/" class="article-title" target="_blank" rel="noopener noreferrer">Unlocking Palestine: Sara Yasin on Editing ‘The Key’</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://i0.wp.com/arablit.org/wp-content/uploads/2026/04/Unlocking-Palestine-Sara-Yasin-on-Editing-The-Key.jpg?fit=1280%2C720&amp;ssl=1" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>In the latest episode of the BULAQ podcast, co-hosts M Lynx Qualey and Ursula Lindsey talk with editor-writer Sara Yasin about the new publication The Key....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://arablit.org/2026/04/23/on-translation-love-and-israeli-prison/" class="article-title" target="_blank" rel="noopener noreferrer">On Translation, Love, and Israeli Prison</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://i0.wp.com/arablit.org/wp-content/uploads/2026/04/On-Translation-Love-and-Israeli-Prison-Tugrul-Mende-in-Conversation-with-Addie-Leak.jpg?fit=1280%2C720&amp;ssl=1" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Addie Leak talks with Tugrul Mende about the translation process, literary awards, and two very different translations processes: translating one book through a riot of multilingual voicenotes and another by an author who was inaccessible, in an Israeli prison....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://arablit.org/2026/04/20/dima-wannouss-damascus-a-tomb-and-a-prison/" class="article-title" target="_blank" rel="noopener noreferrer">Dima Wannous’s ‘Damascus: A Tomb and a Prison’</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://i0.wp.com/arablit.org/wp-content/uploads/2026/04/I-Want-to-Smile-By-Rasha-Omran-1.jpg?fit=1280%2C720&amp;ssl=1" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>"We passed a vast area near my house in Mazzeh, its surface covered with unfinished cement buildings. The driver told me it was a residential and commercial development owned by Asma al-Assad. The next day, one torture survivor told me the purpose of the project was to hide corpses[.]"...</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://arablit.org/2026/04/17/sheikh-zayed-book-award-announces-2026-winners/" class="article-title" target="_blank" rel="noopener noreferrer">Sheikh Zayed Book Award Announces 2026 Winners</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://i0.wp.com/arablit.org/wp-content/uploads/2026/04/Announcing-2026s-Winners.jpg?fit=1280%2C720&amp;ssl=1" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Organizers at the Sheikh Zayed Book Award (SZBA) today announced their 2026 winners across ten categories....</p></li>
-</ul>
-
-<ul class="article-list">
-<li><a href="https://arablit.org/2026/04/16/moneera-al-ghadeer-answers-why-saudi-poetry/" class="article-title" target="_blank" rel="noopener noreferrer">Moneera Al-Ghadeer Answers: ‘Why Saudi Poetry?’</a>
-<p class="abstract"><div class="img-container">
-            <img src="https://i0.wp.com/arablit.org/wp-content/uploads/2026/04/Moneera-Al-Ghadeer-Responds-Why-Saudi-Poetry.jpg?fit=1280%2C720&amp;ssl=1" alt="" class="content-img" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('img-error');"
-                 onload="this.parentElement.classList.add('img-loaded');">
-            <div class="img-placeholder">📷</div>
-        </div>Tracing the Ether Contemporary Poetry from Saudi Arabia, ed. Moneera Al-Ghadeer, came out late last year from Syracuse University Press. The anthology brings together 26 poets responding to -- and writing a new future for -- a rapidly changing Saudi Arabia. Moneera answered a few questions about the...</p></li>
-</ul>
-
-
-<hr>
-
-<h2>📚 文学理论与批评</h2>
-
-
-<hr>
-
-<em>报告生成时间: 2026-04-26 03:13</em>  
-<em>共收录 58 个 RSS 源</em>  
-<em>Lichtenberg - 世界文学情报追踪</em>
-
-        </div>
-        
-        <footer>
-            <p>Lichtenberg - 世界文学情报追踪</p>
-        </footer>
-    </div>
-    
-    <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
-    <script>
-        var isWeixin = /MicroMessenger/i.test(navigator.userAgent);
-        
-        if (isWeixin) {
-            document.addEventListener('WeixinJSBridgeReady', function() {
-                WeixinJSBridge.call('hideOptionMenu');
-                WeixinJSBridge.call('showOptionMenu');
-            });
-        }
-        
-        var shareData = {
-            title: '📖 Lichtenberg 世界文学日报',
-            desc: '每日自动抓取美洲、欧洲、非洲、亚洲四大洲文学期刊与评论，生成世界文学综合报告',
-            link: 'https://lichtenberg.vercel.app/',
-            imgUrl: 'https://lichtenberg.vercel.app/cover.jpg',
-            success: function() {},
-            cancel: function() {}
-        };
-        
-        if (typeof wx !== 'undefined') {
-            wx.ready(function() {
-                wx.onMenuShareTimeline(shareData);
-                wx.onMenuShareAppMessage(shareData);
-                wx.onMenuShareQQ(shareData);
-                wx.onMenuShareWeibo(shareData);
-            });
-        }
-    </script>
-</body>
-</html>
+<div class="container">
+<header>
+<h1>📖 📖 Lichtenberg 世界文学日报 - 2026年08月29日</h1>
+<div class="time">生成于 2026-08-29 14:39</div>
+</header>
+<section class="region"><h2>🌎 美洲文学</h2>
+<div class="source"><h3>Paris Review - Interviews</h3>
+<div class="article"><div class="body"><a href="https://www.theparisreview.org/blog/2026/08/21/if-you-build-it-will-they-come-on-the-sperm-racing-world-cup/" target="_blank" rel="noopener">If You Build It, Will They Come? On the Sperm Racing World Cup</a><div class="sum">Onto Sperm Racing’s elegantly vulgar premise, the company has grafted a lame higher purpose intended to justify and temper the joyful stupidity of the enterprise.</div></div></div>
+<div class="article"><div class="body"><a href="https://www.theparisreview.org/blog/2026/08/18/the-catalogue-of-lost-things/" target="_blank" rel="noopener">The Catalogue of Lost Things</a><div class="sum">Some favorite passages from the many new releases that wound up on our desks this July and August.</div></div></div>
+<div class="article"><div class="body"><a href="https://www.theparisreview.org/blog/2026/08/17/james-joycess-baby-impressions-and-other-awkward-pleasures-of-literary-biography/" target="_blank" rel="noopener">James Joyce’s Baby Impressions and Other “Awkward Pleasures” of Literary Biography</a><div class="sum">“I believed I had a fair understanding of W. G. Sebald until I read his biography and saw the black-and-white snapshot of him as a young man standing thigh-deep in a river, topless in wet jeans with a deep tan, defined muscles, and a dagger in his hand.”</div></div></div>
+<div class="article"><div class="body"><a href="https://www.theparisreview.org/blog/2026/08/14/chad-fore-on-lil-spooky/" target="_blank" rel="noopener">In the Studio with Chad Fore, the Writer Behind “Lil Spooky”</a><div class="sum">“‘What are they rapping about?’ ‘Well, devil worship.’”</div></div></div>
+<div class="article"><div class="body"><a href="https://www.theparisreview.org/blog/2026/08/12/the-bookstore-slash-skate-shop-next-to-ballerina-farm/" target="_blank" rel="noopener">The Bookstore-Slash-Skate-Shop Next to Ballerina Farm</a><div class="sum">“The first book I sell on our first day in business is a used copy of 'Fart Proudly: Writings of Benjamin Franklin You Never Read in School.'”</div></div></div>
+</div>
+<div class="source"><h3>Literary Hub</h3>
+<div class="article"><div class="body"><a href="https://lithub.com/helen-mirren-is-playing-patricia-highsmith-watch-the-trailer-for-a-talent-for-murder/" target="_blank" rel="noopener">Helen Mirren is playing Patricia Highsmith?! Watch the trailer for  A Talent for Murder.</a><div class="sum">This morning, fans of both Patricia Highsmith and Dame Helen Mirren have cause to rejoice. The trailer for Anton Corbijn&#8217;s new Ripley-adjacent film, A Taste for Murder, is out now. The film stars Alden Ehrenreich, Olivia Cooke, and an almost</div></div></div>
+<div class="article"><div class="body"><a href="https://lithub.com/an-ode-to-the-gleeful-terror-of-tim-currys-pennywise/" target="_blank" rel="noopener">An Ode to the Gleeful Terror of Tim Curry’s Pennywise</a><div class="sum">Tim Curry, who died this week at 80, will probably always be best known for his performance as Dr. Frank-N-Furter in The Rocky Horror Picture Show, and not unreasonably. With his snug corset and unsubtle make-up and minuscule shorts to</div></div></div>
+<div class="article"><div class="body"><a href="https://lithub.com/lit-hub-daily-august-28-2026/" target="_blank" rel="noopener">Lit Hub Daily: August 28, 2026</a><div class="sum">&#8220;He wrote sad songs but didn’t want to make anyone sad. He had the kind of shy, exaggerated empathy of someone who’s always afraid of hurting people but never afraid of hurting himself.&#8221; On loving Elliott Smith. &#124; Lit Hub</div></div></div>
+<div class="article"><div class="body"><a href="https://lithub.com/eight-simple-rules-for-dating-your-historical-fiction/" target="_blank" rel="noopener">Eight Simple Rules for Dating Your Historical Fiction</a><div class="sum">This first appeared in Lit Hub’s Craft of Writing newsletter—sign up here. Consider these opening lines. Their source is far from obscure, so there’s a good chance you’ll recognize them right away. Take a moment over them anyway: “So now get up.”</div></div></div>
+<div class="article"><div class="body"><a href="https://lithub.com/augusts-best-reviewed-nonfiction-2/" target="_blank" rel="noopener">August’s Best Reviewed Nonfiction</a><div class="sum">Claire Stapleton&#8217;s Don&#8217;t Be Evil, Kimon de Greef&#8217;s The Ego Trip, and Dave Ziren&#8217;s The People&#8217;s Historian all feature among the best reviewed nonfiction titles of the month. Brought to you by Book Marks, Lit Hub’s home for book reviews. *</div></div></div>
+</div>
+<div class="source"><h3>NPR Books</h3>
+<div class="article"><div class="body"><a href="https://www.npr.org/2026/08/28/nx-s1-5945279/scientists-collaborated-with-narwhals-to-study-warming-waters-in-the-arctic" target="_blank" rel="noopener">Scientists collaborated with narwhals to study warming waters in the Arctic</a><div class="sum">Scientists collaborated with narwhals for a new study to understand human-caused climate change in the Arctic and rising sea levels around the world.</div></div></div>
+<div class="article"><div class="body"><a href="https://www.npr.org/2024/08/16/g-s1-140898/paleontologist-ken-lacovara-and-the-fifth-extinction-that-killed-the-dinosaurs" target="_blank" rel="noopener">New Jersey is a fossil hotspot, with answers about the day the dinosaurs died</a><div class="sum">Paleontologist Ken Lacovara never expected to find critical fossil data in a New Jersey suburb—let alone info about the asteroid that killed the dinosaurs. His dig site is now a fossil park and museum.</div></div></div>
+<div class="article"><div class="body"><a href="https://www.npr.org/2026/08/28/nx-s1-5905370/nasa-nancy-grace-roman-space-telescope-dark-energy-supernova" target="_blank" rel="noopener">NASA is about to launch a space telescope that could change how we see the universe</a><div class="sum">NASA's Nancy Grace Roman Space Telescope launches Aug. 30 on a mission to explore some of the most pressing mysteries of the cosmos.</div></div></div>
+<div class="article"><div class="body"><a href="https://www.npr.org/2026/08/28/nx-s1-5945799/nepal-floods-climate-change-himalayas" target="_blank" rel="noopener">A melting glacier contributed to the deadly Nepal floods. We can expect more like this</a><div class="sum">As the climate continues to warm, scientists warn that the frequency of disasters like the floods in Nepal will increase.</div></div></div>
+<div class="article"><div class="body"><a href="https://www.npr.org/2026/08/27/nx-s1-5944328/the-real-cause-of-most-wildfires-people" target="_blank" rel="noopener">The real cause of most wildfires? People</a><div class="sum">More than three quarters of all wildfires in the U.S. are caused by human behavior including accidents, negligence and arson.</div></div></div>
+</div>
+<div class="source"><h3>Latin American Literature Today</h3>
+<div class="article"><div class="body"><a href="https://latinamericanliteraturetoday.org/2026/06/this-never-happened-translated-by-rhonda-dahl-buchanan/" target="_blank" rel="noopener">This Never Happened, translated by Rhonda Dahl Buchanan</a><div class="sum">“We’ve had visitors. They just left. You’d best take a walk.” Francisco Amaro Villafuerte—Pancho to his friends—a journalist and union rep for a large publishing group in Buenos Aires, is also the author of a soon-to-be-published novel. A left-wing liberal, he’s aware of the surrounding dangers, but assumes he won’t be a target. But when [&#8230;]</div></div></div>
+<div class="article"><div class="body"><a href="https://latinamericanliteraturetoday.org/2026/06/the-game-at-the-end-of-the-world-translated-by-francisco-cantu/" target="_blank" rel="noopener">The Game at the End of the World, translated by Francisco Cantú</a><div class="sum">Soccer (née football) fans will rejoice at this all-new volume of crackling essays from the author of God Is Round. Here, Juan Villoro explores the sport through the elements that make it the world’s favorite pastime, from its ancient origins, mythic players, exhilarating matches, endemic rivalries, and the unlikely moments in which football has changed [&#8230;]</div></div></div>
+<div class="article"><div class="body"><a href="https://latinamericanliteraturetoday.org/2026/06/two-trilingual-poems-from-stolen-flower/" target="_blank" rel="noopener">Two Trilingual Poems from Stolen Flower</a><div class="sum">Qui ziaanadi’ guelacahui Ne qui zucaadiaga’ guirasi dxi xquendarigani yuuba qui racaladxe’ guna’ stiidxayuubalu’ Gundisalú ti ma yaca gueedandá’ siadoguie’ Gubidxa guinaaze’ laanu ma zuhua’nu lu neza Paraa ndi’ chuunu pa ma binidé cabe lidxinu la? Guzaru’ bizana’ Yaga yooxho’ gucabi laanu &#160; No será eterna la noche oscura Ni escucharé por siempre el silencio [&#8230;]</div></div></div>
+<div class="article"><div class="body"><a href="https://latinamericanliteraturetoday.org/2026/06/translation-as-relation-and-relative-irma-pinedas-stolen-flower/" target="_blank" rel="noopener">Translation as Relation and Relative: Irma Pineda’s Stolen Flower</a><div class="sum">“Anybody who thinks they can understand how terrible the terror has been, without understanding how beautiful the beauty has been against the grain of the terror, is wrong.” &#8211; Fred Moten &#160; Isthmus Zapotec poet Irma Pineda’s Stolen Flower wields heart-wrenching, beautiful poetry—flowered words—against the grain of state-sponsored terror. She tends to the wounds of [&#8230;]</div></div></div>
+<div class="article"><div class="body"><a href="https://latinamericanliteraturetoday.org/2026/06/i-was-finding-a-path-to-healing-through-poetry-a-conversation-with-irma-pineda-and-wendy-call-on-stolen-flower/" target="_blank" rel="noopener">Finding a Path to Healing through Poetry: A Conversation with Irma Pineda and Wendy Call on Stolen Flower</a><div class="sum">In Stolen Flower, Irma Pineda evokes the rage and resilience of Mexico’s Indigenous peoples who have suffered state-sponsored terror with poems that grow from a tragic seed—the 2007 rape and murder of a 73-year-old Nahua woman, Ernestina Ascencio Rosario, by soldiers of the Mexican army—into a multivocal call to honor lost lives and seek justice. [&#8230;]</div></div></div>
+</div>
+</section>
+<section class="region"><h2>🌍 欧洲文学</h2>
+<div class="source"><h3>The Guardian - Books</h3>
+<div class="article"><div class="body"><a href="https://www.theguardian.com/books/2026/jul/28/sophie-standing-there-book-review-novel-author-meg-mason" target="_blank" rel="noopener">Sophie, Standing There by Meg Mason review – a tale of literary obsession, with cameos from real-life authors</a><div class="sum">A heartbroken woman becomes fixated on a famous writer in this witty, touching follow-up to Sorrow and BlissThe protagonist of Meg Mason’s new book, the follow-up to the 2020 tragicomedy Sorrow and Bliss, is an invisible woman. She might well be standing there but you won’t notice her. She’s a techie at literary festivals – the person who shuffles up to a famous writer a few minutes before their event and apologetically slides a microphone cable down their shirt while they’re making small tal...</div></div></div>
+<div class="article"><div class="body"><a href="https://www.theguardian.com/books/2026/aug/28/childrens-books-roundup-the-best-new-picture-books-and-novels" target="_blank" rel="noopener">Children’s books roundup – the best new picture books and novels</a><div class="sum">Poetry with wonder and wit; a heartwarming tale for horse lovers; a portal to the future; a brilliant YA wartime romance and moreSmall Monster, Big Monster by Allan Sanders, Phaidon, £7.95Refrigerator is EMPTY. Monster is FULL (of pizza!). An eye-wateringly bright board book, featuring splendidly zany, toddler-pleasing pairs of opposites.The Flying Machine of Dreams by Kate Wakeling, illustrated by Viviane Schwarz, Otter-Barry, £12.99A delectable picture-book collaboration that perfectly dist...</div></div></div>
+<div class="article"><div class="body"><a href="https://www.theguardian.com/books/2026/aug/27/kolkhoz-by-emmanuel-carrere-review-intricate-portrait-of-an-elite-french-family" target="_blank" rel="noopener">Kolkhoz by Emmanuel Carrère review – intricate portrait of an elite French family</a><div class="sum">The author of The Adversary and Yoga unearths a history that includes the Nazis, Russia, and the Académie FrançaiseWhen Emmanuel Carrère’s mother, Hélène, died in 2023, at the age of 94, President Macron spoke at her memorial. She had been “perpetual secretary” of the&nbsp;Académie Française, in effect its head, and 200 people gathered at Les Invalides in Paris to pay tribute. Emmanuel’s father, Louis, was there too, in a wheelchair, only half aware of&nbsp;what was going on. This 400-page me...</div></div></div>
+<div class="article"><div class="body"><a href="https://www.theguardian.com/books/2022/feb/23/tell-us-what-have-you-been-reading-this-month" target="_blank" rel="noopener">Tell us: what have you been reading this month?</a><div class="sum">We would like to hear about the books you’ve particularly enjoyed this monthAs part of The Guardian’s “what we’re reading” series, we would like to hear about the books you’ve particularly enjoyed this month.Have you read a book in recent weeks – fiction or non-fiction – that you’d recommend? Tell us all about it below. Continue reading...</div></div></div>
+<div class="article"><div class="body"><a href="https://www.theguardian.com/books/2026/aug/27/the-things-we-never-say-elizabeth-strout-audiobook-review-no-man-is-an-island" target="_blank" rel="noopener">The Things We Never Say by Elizabeth Strout audiobook review – brilliant portrait of an existential crisis</a><div class="sum">A teacher’s private anxieties are subtly combined with political events in this Booker-listed tale set in coastal MassachusettsArtie Dam is a much-loved history teacher from coastal Massachusetts famed for his white socks and old sneakers and who sees a growing hopelessness in his young students. Not only are they dispirited by the state of the world, but they also believe they won’t be able to achieve their professional dreams. Their feelings of dread and ennui are shared by Artie who is agh...</div></div></div>
+</div>
+<div class="source"><h3>Le Monde des Livres</h3>
+<div class="article"><div class="body"><a href="https://www.lemonde.fr/livres/article/2026/08/29/histoire-du-livre-zones-a-defendre-roman-d-une-societe-fragmentee-de-benedicte-dupre-la-tour-ne-d-un-trajet-en-blablacar_6759581_3260.html" target="_blank" rel="noopener">Histoire du livre « Zones à défendre », roman d’une société fragmentée de Bénédicte Dupré la Tour, né d’un trajet en Blablacar</a><div class="sum">Nos incompréhensions mutuelles sont au centre du deuxième roman de l’écrivaine, qui met en scène une ingénieure assez rationnelle confrontée à une mère complotiste et à un frère rebelle.</div></div></div>
+<div class="article"><div class="body"><a href="https://www.lemonde.fr/culture/article/2026/08/29/notre-selection-de-bd-mangas-et-comics-d-aout-mrs-orwell-en-liberte-asphalte-sauvage_6759401_3246.html" target="_blank" rel="noopener">Notre sélection de BD, mangas et comics d’août : « Mrs. Orwell », « En liberté », « Asphalte sauvage »…</a><div class="sum">Chaque mois, La Matinale vous propose des ouvrages récemment parus, chroniqués par la rédaction. Ce mois-ci notamment, Florence Cestac, secondée par l’ancien chef Serge-Antoine Quéron, explore le monde fascinant de la restauration.</div></div></div>
+<div class="article"><div class="body"><a href="https://www.lemonde.fr/livres/article/2026/08/28/la-chronique-poches-de-francois-angelier-trois-grands-britanniques-arthur-conan-doyle-joseph-conrad-et-d-h-lawrence_6759061_3260.html" target="_blank" rel="noopener">La chronique poches de François Angelier : trois grands Britanniques, Arthur Conan Doyle, Joseph Conrad et D. H. Lawrence</a><div class="sum">Le journal des lectures en poche du journaliste.</div></div></div>
+<div class="article"><div class="body"><a href="https://www.lemonde.fr/livres/article/2026/08/28/democratie-guerre-climat-genre-histoire-intimite-une-rentree-des-essais-toujours-aussi-riche-malgre-les-menaces-qui-pesent-sur-le-secteur_6758954_3260.html" target="_blank" rel="noopener">Démocratie, guerre, climat, genre, histoire, intimité : une rentrée des essais toujours aussi riche, malgré les menaces qui pèsent sur le secteur</a><div class="sum">Un aperçu des essais et documents attendus cet automne, parmi les plus de 1 200 à paraître, signés Marie-Jo Bonnet, François-Xavier Fauvelle, Michel Foucault, Bernard-Henri Lévy, Narges Mohammadi, Pierre Rosanvallon, Michel Winock…</div></div></div>
+<div class="article"><div class="body"><a href="https://www.lemonde.fr/livres/article/2026/08/27/la-protagoniste-du-nouveau-roman-de-ph-be-hadjimarkos-clarke-explore-la-fluidite-comme-force-et-comme-forme_6758493_3260.html" target="_blank" rel="noopener">« La protagoniste du nouveau roman de Phœbe Hadjimarkos Clarke explore la fluidité comme force et comme forme »</a><div class="sum">Le feuilleton littéraire de Tiphaine Samoyault, à propos du « Livre des souterrains », de Phœbe Hadjimarkos Clarke, deuxième roman de l’écrivaine, remarquée en 2024 pour « Aliène ».</div></div></div>
+</div>
+<div class="source"><h3>Frankfurter Allgemeine - Bücher</h3>
+<div class="article"><div class="body"><a href="https://www.faz.net/aktuell/feuilleton/buecher/literatur/paulus-hochgatterers-neuer-roman-mio-und-die-unendlichkeit-201115957.html" target="_blank" rel="noopener">„Mio und die Unsterblichkeit“: Gerechtigkeit ist eine unerfüllbare Sehnsucht</a><div class="sum">Wir sind doch alle ein wenig ticky-tacky: Paulus Hochgatterer versetzt sich in seinem neuen Roman in einen körperlich schwer beeinträchtigten, hochintelligenten Jugendlichen.</div></div></div>
+<div class="article"><div class="body"><a href="https://www.faz.net/aktuell/feuilleton/buecher/sachbuch/hans-guenter-wagner-zur-ausbreitung-des-buddhismus-im-westen-200842872.html" target="_blank" rel="noopener">Religionstransfer: Wenn Buddha nach Berlin kommt</a><div class="sum">Erst seit 200 Jahren überhaupt in Deutschland bekannt, breitet sich der Buddhismus in europäischen Großstädten immer weiter aus. Hans-Günter Wagner weist zahlreiche Parallelen zum westlichen Denken nach.</div></div></div>
+<div class="article"><div class="body"><a href="https://www.faz.net/aktuell/feuilleton/buecher/sachbuch/neues-buch-brosius-gersdorf-uebergeht-die-grenzen-der-juristischen-vernunft-accg-201153504.html" target="_blank" rel="noopener">Buch von Brosius-Gersdorf: War es ein schwerer Fehler?</a><div class="sum">Frauke Brosius-Gersdorf schildert ihre gescheiterte Wahl zur Richterin am Bundesverfassungsgericht als Angriff auf den Rechtsstaat. Wer die Vernunft so eindeutig auf seiner Seite weiß, hat für politische Kompromisse wenig übrig.</div></div></div>
+<div class="article"><div class="body"><a href="https://www.faz.net/aktuell/feuilleton/buecher/literatur/kanzlerkino-von-mirko-bonne-die-koalition-als-bro-story-accg-201119616.html" target="_blank" rel="noopener">Mirko Bonnés „Kanzlerkino": Der Fortbestand der Koalition – eine Bro-Story?</a><div class="sum">Bericht aus dem Glashaus: Mit „Kanzlerkino“ versucht sich Mirko Bonné an einem Roman über deutsch-deutsche Befindlichkeiten, vor und direkt nach dem Fall der Mauer.</div></div></div>
+<div class="article"><div class="body"><a href="https://www.faz.net/aktuell/feuilleton/buecher/autoren/heute-waere-goethe-277-geworden-glosse-zum-geburtstag-201135107.html" target="_blank" rel="noopener">Zum geburtstag: Übersetzer sind Propheten</a><div class="sum">1827 las der damals 77-jährige Goethe die vierbändige Textsammlung „German Romance“. Das inspirierte ihn zu grundlegenden Überlegungen über Übersetzungen: unsere Glosse des heutigen Jubilars.</div></div></div>
+</div>
+</section>
+<section class="region"><h2>🌍 非洲文学</h2>
+<div class="source"><h3>Brittle Paper</h3>
+<div class="article"><div class="body"><a href="https://brittlepaper.com/2026/08/awaiting-the-next-time-wasafiris-127th-issue-asks-what-solidarity-looks-like-amid-genocide-and-occupation/" target="_blank" rel="noopener">“Awaiting the Next Time”: Wasafiri’s 127th Issue Asks What Solidarity Looks Like Amid Genocide and Occupation</a><div class="sum">Wasafiri, the London-based magazine of international contemporary writing, has released its 127th issue, themed Solidarities. The autumn 2026 issue takes on one of the most urgent questions of the present moment: what shapes do solidarities take in these strange times we are living in, and how can they be found and forged when faced with [&#8230;]</div></div></div>
+<div class="article"><div class="body"><a href="https://brittlepaper.com/2026/08/what-fossil-and-my-father-taught-me-christy-ogbenjuwa-fiction/" target="_blank" rel="noopener">What Fossil and My Father Taught Me | Christy Ogbenjuwa | Fiction</a><div class="sum">&#160; To wail in peace the other day, I took a stroll through the cemetery, one of the few places where tears go undisturbed. I wanted to see my father’s grave, maybe even throw in a joke about how crooked his teeth used to be, but what I really needed was a place to pour [&#8230;]</div></div></div>
+<div class="article"><div class="body"><a href="https://brittlepaper.com/2026/08/flame-tree-acquires-worldwide-rights-for-three-new-afro-surreal-books-by-award-winning-eugen-bacon/" target="_blank" rel="noopener">Flame Tree Acquires Worldwide Rights for Three New Afro-Surreal Books by Award-winning Eugen Bacon</a><div class="sum">Flame Tree Publishing is delighted to announce the acquisition of worldwide rights for three new books by the award-winning African-Australian author Eugen Bacon. Secured by Flame Tree Founder and Publisher Nick Wells, the 24-month agreement marks a significant deepening of the creative partnership between the publisher and the author. The three upcoming releases showcase Bacon’s [&#8230;]</div></div></div>
+<div class="article"><div class="body"><a href="https://brittlepaper.com/2026/08/nigerian-american-chef-kwame-onwuachi-serves-up-his-third-book-all-hours-crazy-good-food-for-whatever-whenever-coming-this-september/" target="_blank" rel="noopener">Nigerian American Chef Kwame Onwuachi Serves Up His Third Book, All Hours: Crazy Good Food for Whatever, Whenever, Coming This September</a><div class="sum">Chef Kwame Onwuachi, the Nigerian American culinary force and James Beard Award-winning chef behind Tatiana, which has landed on the New York Times&#8216; list of top 100 restaurants every year since opening in 2022, is set to release his third book, All Hours: Crazy Good Food for Whatever, Whenever, on September 22, 2026, co-written once [&#8230;]</div></div></div>
+<div class="article"><div class="body"><a href="https://brittlepaper.com/2026/08/the-ugly-review-opens-submissions-for-issue-ii-themed-metamorphosis-submit-by-september-15-2026/" target="_blank" rel="noopener">The Ugly Review Opens Submissions for Issue II, Themed “Metamorphosis” | Submit by September 15, 2026</a><div class="sum">The Ugly Collective has opened its call for submissions for the second issue of The Ugly Review, themed &#8220;Metamorphosis.&#8221; The editors are seeking fiction, nonfiction, poetry, and photography/art that explores transformation in all its diverse, weird, beautiful, violent, and quiet forms. The theme spans four broad directions: physical transformation tied to the body, illness, migration, [&#8230;]</div></div></div>
+</div>
+<div class="source"><h3>The Johannesburg Review of Books</h3>
+<div class="article"><div class="body"><a href="https://johannesburgreviewofbooks.com/2025/12/15/the-jrb-fiction-issue-vol-9-issue-3-december-2025/" target="_blank" rel="noopener">The JRB Fiction Issue! (Vol. 9, Issue 3, December 2025)</a><div class="sum">Wamuwi Mbao • Makhosazana Xaba • Simon van Schalkwyk • Khadija Tracey Heeger • Sean Jacobs • Barbara Boswell •...</div></div></div>
+<div class="article"><div class="body"><a href="https://johannesburgreviewofbooks.com/2025/12/15/a-reluctant-complicated-love-story-spanning-the-globe-and-a-myriad-natural-disasters-barbara-boswell-reviews-ice-shock-by-elleke-boehmer/" target="_blank" rel="noopener">‘A reluctant, complicated love story spanning the globe and a myriad natural disasters’—Barbara Boswell reviews Ice Shock by Elleke Boehmer</a><div class="sum">Cursed Daughters—the highly anticipated new novel from Oyinkan Braithwaite—is out now from Jonathan Ball Publishers! Braithwaite is a Nigerian–British novelist...</div></div></div>
+<div class="article"><div class="body"><a href="https://johannesburgreviewofbooks.com/2025/12/15/always-in-search-of-uncompromising-honesty-in-a-compromised-and-compromising-world-kevin-goddard-reviews-kelwyn-soles-latest-collection-of-poetry-what-is-owed/" target="_blank" rel="noopener">‘Always in search of uncompromising honesty in a compromised and compromising world’—Kevin Goddard reviews Kelwyn Sole’s latest collection of poetry, What is Owed?</a><div class="sum">Kevin Goddard reviews What is Owed? by Kelwyn Sole—a poet’s summing up of a life dedicated both to verse and...</div></div></div>
+<div class="article"><div class="body"><a href="https://johannesburgreviewofbooks.com/2025/12/15/can-we-engage-with-power-without-being-corrupted-by-it-sean-jacobs-reviews-mahmood-mamdanis-new-book-slow-poison-idi-amin-yoweri-museveni-and-the-making-of-the-ugandan-state/" target="_blank" rel="noopener">Can we engage with power without being corrupted by it? Sean Jacobs reviews Mahmood Mamdani’s new book, Slow Poison: Idi Amin, Yoweri Museveni, and the Making of the Ugandan State</a><div class="sum">Sean Jacobs reviews Slow Poison by Mahmood Mamdani, a rich and textured account of Ugandan and postcolonial African politics, and...</div></div></div>
+</div>
+</section>
+<section class="region"><h2>🌏 亚洲文学</h2>
+<div class="source"><h3>China Daily - Books</h3>
+<div class="article"><div class="body"><a href="http://www.chinadaily.com.cn/culture/2018-02/09/content_35692054.htm" target="_blank" rel="noopener">Shandong Art Troupe delights Cubans with New Year greetings</a><div class="sum">With festive Chinese music and dances, acrobatics, magic shows and martial arts performances, the Shandong Art Troupe staged an exciting show during the 27th Havana International Book Fair in the Cuban capital of Havana on Feb 2.</div></div></div>
+<div class="article"><div class="body"><a href="http://www.chinadaily.com.cn/culture/2017-12/06/content_35230985.htm" target="_blank" rel="noopener">Shaanxi museum releases calendar of cultural relics</a><div class="sum">The Shaanxi History Museum released the first calendar of cultural relics in Shaanxi province on Tuesday, showcasing 365 pieces of exquisite collections from ancient China.</div></div></div>
+<div class="article"><div class="body"><a href="http://www.chinadaily.com.cn/business/4thwic/2017-12/06/content_35228732.htm" target="_blank" rel="noopener">Gaming industry opens a whole new chapter</a><div class="sum">Zhang Wenxiu loved reading Zhu Xian, or Jade Dynasty, the smash-hit supernatural novel which created a stir online.</div></div></div>
+<div class="article"><div class="body"><a href="http://www.chinadaily.com.cn/business/4thwic/2017-12/06/content_35228289.htm" target="_blank" rel="noopener">The plot thickens for online literary companies</a><div class="sum">Stories from aspiring authors are now read by millions of users on the internet before being turned into movies, TV series and games.</div></div></div>
+<div class="article"><div class="body"><a href="http://www.chinadaily.com.cn/culture/2017-12/06/content_35228269.htm" target="_blank" rel="noopener">Playlist</a><div class="sum">Television viewers and those familiar with people on the autism spectrum agree: The Good Doctor is a good show.</div></div></div>
+</div>
+<div class="source"><h3>ArabLit & ArabLit Quarterly</h3>
+<div class="article"><img alt="" class="attachment-full size-full wp-post-image" height="500" src="https://i0.wp.com/arablit.org/wp-content/uploads/2026/08/Express-collage-e1787896335250.png?fit=500%2C500&amp;ssl=1" width="500" /><div class="body"><a href="https://arablit.org/2026/08/28/atheer-al-nashmi-when-love-becomes-both-adversary-and-judge/" target="_blank" rel="noopener">Atheer al-Nashmi: When Love Becomes Both Adversary and Judge</a><div class="sum">Atheer al-Nashmi: When Love Becomes Both Adversary and Judge Teenage romances, or an imaginative pattern? By Mohsen Al-Wayili &#160; Asked once whether any of her novels were an autobiography, the [&#8230;]</div></div></div>
+<div class="article"><div class="body"><a href="https://arablit.org/2026/08/26/four-libyan-women-writers-you-should-read/" target="_blank" rel="noopener">Four Libyan Women Writers You Should Read</a><div class="sum">For Women in Translation Month (#WiTMonth), we take you on a tour of work by four Libyan women writers. For more on the Libyan literary scene, visit ArabLit’s June 2026 [&#8230;]</div></div></div>
+<div class="article"><img alt="" class="attachment-full size-full wp-post-image" height="720" src="https://i0.wp.com/arablit.org/wp-content/uploads/2023/04/Untitled-design-178.png?fit=1280%2C720&amp;ssl=1" width="1280" /><div class="body"><a href="https://arablit.org/2026/08/25/the-red-suns-purple-moons-and-gun-carrying-mice-of-syrian-poet-daad-haddad-2/" target="_blank" rel="noopener">The Red Suns, Purple Moons, and Gun-Carrying Mice of Syrian Poet Da’ad Haddad</a><div class="sum">"In her poetry world, the sun is red. The moon is purple. Snow is ubiquitous. Winter is eternal."</div></div></div>
+<div class="article"><img alt="" class="attachment-full size-full wp-post-image" height="329" src="https://i0.wp.com/arablit.org/wp-content/uploads/2026/08/Screenshot-2026-08-22-093211.jpg?fit=788%2C329&amp;ssl=1" width="788" /><div class="body"><a href="https://arablit.org/2026/08/24/where-is-everybody/" target="_blank" rel="noopener">Where is Everybody?</a><div class="sum">Originally published in December 2012, “Where Is Everybody?” is a celebrated essay by Egyptian writer and novelist Ahmed Khaled Tawfik, later collected in Coffee with Uranium, first published in 2012. [&#8230;]</div></div></div>
+<div class="article"><img alt="" class="attachment-full size-full wp-post-image" height="720" src="https://i0.wp.com/arablit.org/wp-content/uploads/2026/08/Syrians-on-the-Pitch-By-Luqman-Derky-Translated-by-Daniel-Behar-18.png?fit=1280%2C720&amp;ssl=1" width="1280" /><div class="body"><a href="https://arablit.org/2026/08/20/women-recommending-women-favorite-book-spaces/" target="_blank" rel="noopener">Women Recommending Women: Favorite Book Spaces</a><div class="sum">To mark Women in Translation Month (#WiTMonth), ArabLit's Meriem Essaoudy talked with women who write in Arabic around the world, asking them to recommend favorite contemporary and classic books by women, remarkable women in publishing, and also favorite women-run book spaces.</div></div></div>
+</div>
+</section>
+<footer>📖 由 rss-pipeline 自动生成 · 2026-08-29 14:39</footer>
+</div></body></html>
